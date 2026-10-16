@@ -1,43 +1,54 @@
 # The Website That Goes Wrong
 
-A single-page homage to *The Play That Goes Wrong* — a grand product launch, staged as a
-live theatre broadcast, that falls **deliberately** and gloriously apart. Narrated by
-**Barnaby Finch, Deputy Stage Manager** (Acting Head, "temporarily"), who insists
-everything is under control while it demonstrably is not.
+A product launch, staged as live theatre — and **you're the Deputy Stage Manager**.
 
-Controlled chaos: every malfunction is scripted, recoverable, and winking. Nothing
-actually breaks — it just *looks* like it does.
+The top of the screen is the stage: a slick launch website built out of plywood and hope.
+The bottom is your prompt desk: the prompt book, a cue light, and a big green **GO**.
+The show only moves when you call it. Every cue goes wrong. The wreckage piles up on
+stage. And at the final curtain, everything that fell off flies back into place — and the
+prompt book reveals that every single disaster was rehearsed.
+
+Controlled chaos: nothing on this page actually breaks. It all goes wrong *rightfully*.
 
 ## Run it
 
-It's one self-contained file — no build, no dependencies, no backend.
+One self-contained file, no build, no dependencies.
 
 ```bash
-open index.html            # macOS: opens in your default browser
-# or serve it:
-python3 -m http.server 8000   # then visit http://localhost:8000
+open index.html
 ```
 
-## The arc
+## How to play
 
-Interact with the page — click, type, drag, scroll — and the show escalates on its own,
-then hitting **LAUNCH THE FUTURE** kicks off the full meltdown:
+- Wait for the lamp to say **STANDBY**, then press **GO** (or Space / Enter).
+- Some cues need a hand from the audience — press the swinging PRE-ORDER button, waft the
+  haze, find the mains switch by torchlight. If you don't, the crew covers for you.
+- Calling GO while a cue is still running is an *unscheduled incident*. It goes on your
+  show report.
+- **CANS** turns on sound (off by default).
 
-1. **Cold open** — the curtain isn't ready; Barnaby panics, then reveals the "polished" launch.
-2. **Subtle unease** — the headline gets stage fright, the countdown counts *up*, the price gives up.
-3. **Controls rebel** — the LAUNCH button flees your cursor, consent checkboxes multiply, validation rejects correct emails.
-4. **The set turns** — the whole stage tilts, letters fall off, screws pop.
-5. **System meltdown** — "Update 3,000,000", a Blue Screen of Just Kidding, a 147% progress bar.
-6. **Total chaos** — the fourth wall falls over revealing backstage, Comic Sans takes over, the controls unionise and go on strike.
-7. **The recovery that also goes wrong** — a velvet curtain sweeps in to fix it, then jams and tears.
-8. **Curtain call** — an exhausted, sincere bow, undercut one last time, with absurd credits and an `ENCORE?`.
+## The running order
+
+| Cue | Supposed to | Actually |
+| --- | --- | --- |
+| FLY 1 | Curtain flies out | Sticks, drops, flies — and the counterweight lands on stage |
+| LX 2 | Spot finds Barnaby | Finds a wall, the sandbag, another wall… then Barnaby |
+| FLY 3 | Title flies in | Arrives alphabetically, sorts itself out, loses its E |
+| VID 4 | Product film | No signal, the DVD logo (it hits the corner), Barnaby's holiday |
+| SND 5 | Fanfare | Doorbell. Then a sad trombone ("deliberate") |
+| LX 6 | Price reveal | A slot machine. Three lemons |
+| FLY 7 | Pre-order button | Flies in on one wire and swings — you can still press it |
+| REV 8 | Every angle | The back of the set, and Kevin's sandwich |
+| FX 9 | Gentle haze | Not gentle. Waft it away |
+| LX 10 | Warm wash | Trips the mains. You hold the torch |
+| PYRO 11 | Confetti on "pride" | Fires on "great", sideways, and takes out a lantern |
+| SET 12 | The set holds | It does not |
+| FLY 13 | Final curtain | Perfect. Everything goes home. Exactly as rehearsed |
 
 ## How it's built
 
-Vanilla HTML/CSS/JS in `index.html`. A small shared "chaos engine" (Barnaby's caption
-system, a physics loop for falling elements, a confetti/pyro system, a WebAudio synth for
-sound, screen-tilt and malfunction counters) drives ~25 individual gags wired on top of a
-faux "corporate keynote" launch page. Respects `prefers-reduced-motion`.
-
-`artifact.html` is a body-only build of the same page for hosting as a Claude Artifact;
-it's generated from `index.html` and is not edited by hand.
+Vanilla HTML/CSS/JS in `index.html`. The set is a fixed 1000×600 stage scaled to fit,
+so every fall, swing and spotlight is choreographed in one coordinate space. A small
+engine (a cue runner, surtitles, headset chatter, a single lighting overlay, a physics
+loop for debris, a particle system, and a WebAudio synth) drives thirteen cues written as
+plain async functions. Respects `prefers-reduced-motion`.
