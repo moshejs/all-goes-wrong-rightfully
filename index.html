@@ -2,1580 +2,1030 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>The Website That Goes Wrong — A Live Malfunction in One Act</title>
-<meta name="description" content="A grand product launch, staged as live theatre, falling gloriously apart. Deputy Stage Manager Barnaby Finch apologises." />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>The Website That Goes Wrong</title>
+<meta name="description" content="A product launch staged as live theatre. You're the Deputy Stage Manager. Call the cues. Everything goes wrong — exactly as rehearsed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================================
-   THE WEBSITE THAT GOES WRONG
-   A single-page homage to "The Play That Goes Wrong."
-   Everything here breaks on purpose. Design commits to one world: a dark
-   theatre stage, so it is deliberately single-theme.
+   THE WEBSITE THAT GOES WRONG — cue-to-cue
+   Top half: the stage, where a product-launch website is the set.
+   Bottom half: the prompt desk, where you (the DSM) call every cue.
+   Every malfunction is choreographed. That's the whole point.
+   One world — a dark theatre — so it is deliberately single-theme.
    ========================================================================== */
+@property --sx  { syntax:'<length>'; inherits:false; initial-value:500px; }
+@property --sy  { syntax:'<length>'; inherits:false; initial-value:300px; }
+@property --sr  { syntax:'<length>'; inherits:false; initial-value:1200px; }
+@property --soft{ syntax:'<length>'; inherits:false; initial-value:60px; }
+@property --dim { syntax:'<number>'; inherits:false; initial-value:0; }
 
 :root{
   color-scheme: dark;
+  --house:#0c0809; --house-2:#160d10;
+  --velvet:#7c1527; --velvet-dk:#3a0812; --velvet-lt:#a3243a;
+  --gold:#c9a35a; --gold-lt:#ecd59a;
 
-  /* --- the theatre (the frame) --- */
-  --oxblood:#4a0d15;
-  --velvet:#6b1220;
-  --velvet-lit:#8f1a2a;
-  --stage-black:#120a0c;
-  --stage-deep:#0a0608;
-  --brass:#c9a24b;
-  --brass-bright:#e9cd82;
-  --ivory:#f4ead2;
-  --paper:#efe4c8;
-  --ink:#20140f;
+  --flat:#f5f1e8; --flat-2:#ebe5d8; --ink:#16171c; --ink-2:#555866; --electric:#3550ff;
 
-  /* --- the "product launch" (trying to be slick) --- */
-  --slick-bg:#f7f8fb;
-  --slick-ink:#141a2b;
-  --slick-sub:#5a6479;
-  --slick-line:#e3e7ef;
-  --slick-blue:#2f6bff;
-  --slick-blue2:#7b3cff;
+  --metal:#1b1d21; --metal-2:#24272c; --metal-3:#30343a; --label:#8d939b;
+  --amber:#ffb020; --red:#ff3b30; --green:#2fd36b;
 
-  /* --- the things that go wrong (clashing on purpose) --- */
-  --hazard:#ff6a1a;
-  --hazard-yellow:#ffd21a;
-  --tech-cyan:#12c2d6;
-  --danger:#e0263b;
+  --paper:#f2ead6; --paper-ink:#29241c; --graphite:#4c5263; --redpencil:#c2352b;
 
-  /* --- fonts --- */
-  --display:"Didot","Bodoni 72","Playfair Display",Georgia,"Times New Roman",serif;
-  --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
-  --mono:"Courier New",ui-monospace,SFMono-Regular,monospace;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --wrong:"Comic Sans MS","Comic Sans","Chalkboard SE",cursive;
+  --serif:"Instrument Serif","Didot","Bodoni 72",Georgia,serif;
+  --sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Courier Prime","Courier New",ui-monospace,monospace;
+  --hand:"Caveat","Bradley Hand","Segoe Print",cursive;
 
-  --booth-h: 92px;
-  --tilt: 0deg;
+  --desk-h: 270px;
 }
-
 *{ box-sizing:border-box; }
-html,body{ margin:0; padding:0; }
-html{ background:var(--stage-deep); overflow-x:clip; }
+html,body{ margin:0; height:100%; }
 body{
-  font-family:var(--serif);
-  color:var(--ivory);
+  background:var(--house); color:#efe6d2; font-family:var(--sans);
+  display:grid; grid-template-rows:minmax(0,1fr) var(--desk-h);
+  height:100vh; height:100dvh; overflow:hidden; -webkit-font-smoothing:antialiased;
+}
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--gold-lt); outline-offset:2px; }
+
+/* ============================== THE THEATRE ============================== */
+#theatre{
+  position:relative; min-height:0; display:flex; flex-direction:column; align-items:center;
+  padding:10px 16px 0; overflow:hidden; user-select:none; -webkit-user-select:none;
   background:
-    radial-gradient(120% 80% at 50% -10%, rgba(201,162,75,.10), transparent 55%),
-    radial-gradient(140% 100% at 50% 120%, rgba(74,13,21,.55), transparent 60%),
-    linear-gradient(180deg, var(--stage-black), var(--stage-deep));
-  min-height:100vh;
-  overflow-x:clip;
-  cursor:default;
-  -webkit-font-smoothing:antialiased;
+    radial-gradient(70% 60% at 50% 45%, rgba(201,163,90,var(--house-glow,.16)), transparent 70%),
+    linear-gradient(90deg, var(--velvet-dk) 0, var(--velvet) 3%, var(--velvet-dk) 6%, var(--velvet) 9%, var(--velvet-dk) 12%, transparent 16%,
+                           transparent 84%, var(--velvet-dk) 88%, var(--velvet) 91%, var(--velvet-dk) 94%, var(--velvet) 97%, var(--velvet-dk) 100%),
+    linear-gradient(180deg, var(--house-2), var(--house));
+  transition: --house-glow 1.5s;
 }
-body.no-scroll{ overflow:hidden; }
-
-/* The whole set can tilt like a collapsing backdrop. */
-#stage{
-  transform-origin:50% 0%;
-  transform: rotate(var(--tilt));
-  transition: transform 1.1s cubic-bezier(.34,1.56,.64,1);
-  will-change: transform;
-  min-height:100vh;
-  padding-bottom: calc(var(--booth-h) + 40px);
+body.house-out #theatre{ --house-glow:.03; }
+#theatre::after{ /* house darkness falls over the drapes */
+  content:""; position:absolute; inset:0; pointer-events:none; background:rgba(0,0,0,.0); transition:background 1.5s;
 }
-#stage.level-snap{ transition: transform .5s cubic-bezier(.5,2.2,.4,1); }
+body.house-out #theatre::after{ background:rgba(0,0,0,.42); }
 
-/* ---------- Proscenium frame (curtains & valance) ---------- */
-#proscenium{ position:fixed; inset:0; pointer-events:none; z-index:40; }
-.drape{
-  position:absolute; top:0; bottom:0; width:min(15vw,190px);
+/* surtitles: amber LED strip above the proscenium, like a real theatre */
+#surtitle{
+  position:relative; z-index:3; width:min(100%,880px); min-height:44px; flex:0 0 auto;
+  display:flex; align-items:center; gap:12px; padding:6px 14px; margin-bottom:8px;
+  background:#060404; border:1px solid #2a1c12; border-radius:4px;
+  box-shadow: inset 0 0 18px rgba(0,0,0,.9), 0 0 0 3px rgba(0,0,0,.4);
+  font-family:var(--mono); color:var(--amber); text-shadow:0 0 6px rgba(255,176,32,.55);
+}
+#sur-who{ flex:0 0 auto; font-size:11px; letter-spacing:.18em; opacity:.7; text-transform:uppercase; }
+#sur-txt{ font-size:clamp(13px,1.7vw,17px); line-height:1.25; min-width:0; }
+.sfxl{ letter-spacing:.08em; }
+.sfxl.struck{ text-decoration:line-through; text-decoration-thickness:2px; opacity:.55; }
+.sfxl.fix{ color:#ffd877; }
+
+#stagebox{ position:relative; z-index:1; flex:1 1 auto; min-height:0; width:100%; display:flex; align-items:center; justify-content:center; padding-bottom:26px; }
+#frame{
+  position:relative; flex:0 0 auto; overflow:hidden; background:#000;
+  box-shadow: 0 0 0 3px #0a0606, 0 0 0 7px var(--gold), 0 0 0 9px #6b5326, 0 0 0 11px #0a0606, 0 30px 80px rgba(0,0,0,.7);
+  border-radius:2px; touch-action:none;
+}
+#set{ position:absolute; left:0; top:0; width:1000px; height:600px; transform-origin:0 0; perspective:1800px; }
+
+#audience{ position:absolute; left:0; right:0; bottom:0; height:60px; z-index:2; pointer-events:none; }
+#audience svg{ display:block; fill:#040203; }
+#audience .hd{ transform-box:fill-box; }
+#audience.laugh .hd{ animation:bob .22s ease-in-out 4 alternate; }
+@keyframes bob{ to{ transform:translateY(-4px); } }
+
+/* ============================== THE SET (1000×600) ============================== */
+#turn{ position:absolute; inset:0; transform-style:preserve-3d; transform:rotateY(0deg) rotate(0deg); transform-origin:50% 92%; }
+.face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+#front{ background:
+    linear-gradient(90deg, transparent 332px, rgba(0,0,0,.06) 333px, transparent 335px, transparent 665px, rgba(0,0,0,.06) 666px, transparent 668px),
+    radial-gradient(90% 70% at 50% 30%, var(--flat), var(--flat-2));
+}
+#back{ transform:rotateY(180deg); overflow:hidden; pointer-events:none;
+  background: repeating-linear-gradient(90deg, #b48a57 0 3px, #c49866 3px 9px, #ba8f5c 9px 14px), #c39765; }
+#back::before{ content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent 330px, #6e4f2c 330px 352px, transparent 352px 648px, #6e4f2c 648px 670px, transparent 670px),
+              linear-gradient(180deg, transparent 90px, #6e4f2c 90px 110px, transparent 110px 440px, #6e4f2c 440px 460px, transparent 460px); }
+#back .brace{ position:absolute; height:18px; width:420px; background:#7a5833; box-shadow:0 2px 0 rgba(0,0,0,.25); transform-origin:0 50%; }
+#back .stencil{ position:absolute; font-family:var(--mono); font-weight:700; color:rgba(30,20,10,.72); letter-spacing:.12em; }
+#back .note{ position:absolute; left:690px; top:300px; width:150px; padding:10px; background:#fff27a; color:#333; font-family:var(--hand); font-size:22px; line-height:1; transform:rotate(4deg); box-shadow:0 6px 10px rgba(0,0,0,.25); }
+#back .emoji{ position:absolute; font-size:54px; }
+#back .tape{ position:absolute; height:22px; background:rgba(40,40,40,.85); }
+
+/* stage floor + footlights */
+#floor{ position:absolute; left:0; right:0; top:556px; height:44px;
+  background: repeating-linear-gradient(90deg, #3b2a1d 0 118px, #2c1f15 118px 120px), #33251a;
+  box-shadow: inset 0 8px 14px rgba(0,0,0,.45); }
+#floor::after{ content:""; position:absolute; left:20px; right:20px; bottom:8px; height:8px;
+  background: radial-gradient(circle, #ffe9b0 0 3px, rgba(255,210,120,.0) 4px) 0 0/50px 8px repeat-x; filter:drop-shadow(0 -6px 8px rgba(255,210,120,.55)); }
+
+.piece{ position:absolute; }
+.debris{ z-index:20; }
+
+#nav{ position:absolute; left:40px; top:44px; width:920px; height:40px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(0,0,0,.1); }
+#logo{ display:inline-block; font-family:var(--serif); font-size:26px; color:var(--ink); letter-spacing:.01em; }
+#logo sup{ font-family:var(--sans); font-size:10px; }
+#nav .links{ display:flex; gap:26px; }
+#nav .lnk{ display:inline-block; font-size:14px; font-weight:600; color:var(--ink-2); }
+#nav .lnk.hot{ color:#fff; background:var(--ink); padding:6px 12px; border-radius:99px; margin:-6px 0; }
+
+#eyebrow{ position:absolute; left:0; width:1000px; top:110px; text-align:center; }
+#eyebrow span{ display:inline-block; font-family:var(--mono); font-size:13px; letter-spacing:.32em; color:var(--electric); }
+#headline{ position:absolute; left:0; top:126px; width:1000px; height:132px; margin:0; display:flex; justify-content:center; align-items:flex-end;
+  font-family:var(--serif); font-weight:400; font-size:132px; line-height:1; color:var(--ink); letter-spacing:-.01em; }
+#headline .ltr{ display:inline-block; position:relative; transform-origin:50% 100%; }
+#headline .sp{ display:inline-block; width:38px; }
+#headline.flown .ltr{ transform:translateY(-460px); }
+#headline.wired .ltr::before{ content:""; position:absolute; left:50%; bottom:92%; width:1px; height:600px; background:rgba(0,0,0,.35); }
+.wobble{ animation:wobble .3s ease-in-out 3 alternate; }
+@keyframes wobble{ from{ transform:rotate(-7deg); } to{ transform:rotate(9deg); } }
+#sub{ position:absolute; left:0; width:1000px; top:270px; margin:0; text-align:center; }
+#sub span{ display:inline-block; font-size:19px; color:var(--ink-2); }
+
+#screen{ left:110px; top:318px; width:370px; height:224px; }
+#screen .bezel{ position:absolute; left:0; top:0; width:370px; height:206px; background:#121317; border-radius:12px; padding:10px; box-shadow:0 18px 30px rgba(0,0,0,.25); }
+#screen .stand{ position:absolute; left:160px; top:206px; width:50px; height:18px; background:linear-gradient(#2a2c33,#15161a); clip-path:polygon(20% 0,80% 0,100% 100%,0 100%); }
+#scr{ position:relative; width:100%; height:100%; background:#000; border-radius:4px; overflow:hidden; }
+#scr > *{ position:absolute; inset:0; }
+#scr svg{ width:100%; height:100%; display:block; }
+#scr .cap{ position:absolute; inset:auto 0 0 0; padding:4px 8px; font-family:var(--mono); font-size:11px; color:#fff; background:linear-gradient(0deg,rgba(0,0,0,.7),transparent); }
+#scr .upside{ transform:rotate(180deg); transition:transform .7s cubic-bezier(.4,1.6,.5,1); }
+#scr .upside.fixed{ transform:rotate(0); }
+.dvd-wrap{ background:#000; }
+.dvd{ position:absolute; left:0; top:0; width:74px; height:36px; display:grid; place-items:center; border-radius:50%;
+  font:800 italic 20px/1 var(--sans); color:#000; background:#7cf;
+  animation: dvdx .9s linear 0s 2 alternate forwards, dvdy .6s linear 0s 3 alternate forwards, hue .3s steps(1) 0s 6; }
+@keyframes dvdx{ from{ left:0; } to{ left:calc(100% - 74px); } }
+@keyframes dvdy{ from{ top:0; } to{ top:calc(100% - 36px); } }
+@keyframes hue{ 50%{ background:#f7c; } }
+.dvd.corner{ background:#ffd23a; box-shadow:0 0 0 4px #fff, 0 0 30px #ffd23a; }
+
+#pricebox{ left:560px; top:330px; width:300px; }
+#pricebox .plbl{ font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-2); font-weight:600; }
+#pricebox .reel{ height:74px; overflow:hidden; margin-top:4px; position:relative; }
+#strip > div{ height:74px; font-family:var(--serif); font-size:66px; line-height:74px; color:var(--ink); white-space:nowrap; }
+#pricebox.spinning #strip{ filter:blur(1.4px); }
+#pfoot{ font-family:var(--mono); font-size:12px; color:var(--ink-2); min-height:16px; opacity:0; transition:opacity .4s; }
+#pfoot.show{ opacity:1; }
+
+#cta{ left:560px; top:430px; width:230px; height:58px; border:0; border-radius:99px; cursor:pointer;
+  background:linear-gradient(135deg,var(--electric),#7a3cff); color:#fff; font:800 18px/1 var(--sans); letter-spacing:.06em;
+  box-shadow:0 14px 30px rgba(53,80,255,.35), inset 0 1px 0 rgba(255,255,255,.35); transform-origin:22% -470px; }
+#cta.flown{ transform:translateY(-560px); }
+#cta.wired::before,#cta.wired::after{ content:""; position:absolute; bottom:100%; width:1px; height:600px; background:rgba(0,0,0,.4); }
+#cta.wired::before{ left:22%; } #cta.wired::after{ right:22%; }
+#cta.onewire::after{ display:none; }
+#cta.swing{ animation:swing 1.25s ease-in-out infinite alternate; }
+@keyframes swing{ from{ transform:rotate(-5deg); } to{ transform:rotate(6deg); } }
+#cta small{ display:block; font-size:11px; font-weight:600; opacity:.8; margin-top:3px; letter-spacing:.02em; }
+
+#barnaby{ left:868px; top:332px; width:92px; height:224px; transform-origin:50% 100%; transition:transform .5s; }
+#barnaby svg{ width:100%; height:100%; overflow:visible; }
+#barnaby #upper{ transform-origin:45px 150px; transition:transform .6s cubic-bezier(.4,1.4,.5,1); }
+#barnaby.bow #upper{ transform:rotate(-24deg); }
+#barnaby.lookback{ transform:scaleX(-1); }
+#barnaby.talking #mouth{ animation:yap .14s steps(2) infinite; }
+@keyframes yap{ 50%{ transform:scaleY(2.4); } }
+#mouth{ transform-box:fill-box; transform-origin:center; }
+
+#sandbag{ left:318px; top:-120px; width:52px; height:66px; }
+#sandbag .rope{ position:absolute; left:25px; bottom:100%; width:2px; height:400px; background:#6d5a3f; }
+#sandbag .bag{ position:absolute; inset:0; background:radial-gradient(60% 50% at 45% 40%, #b8a27d, #8c7652); border-radius:42% 42% 30% 30% / 30% 30% 46% 46%;
+  box-shadow: inset 0 -6px 10px rgba(0,0,0,.25); font:700 9px var(--mono); color:rgba(40,25,10,.7); display:grid; place-items:center; }
+#lantern{ left:750px; top:6px; width:56px; height:76px; transform-origin:50% 0; }
+#lantern svg{ width:100%; height:100%; display:block; overflow:visible; }
+#lantern.hit{ animation:jolt .35s ease-in-out 2 alternate; }
+@keyframes jolt{ to{ transform:rotate(18deg); } }
+
+#cannon{ left:18px; top:506px; width:64px; height:50px; }
+#cannon svg{ width:100%; height:100%; overflow:visible; }
+#cannon.fire{ animation:recoil .4s ease-out; }
+@keyframes recoil{ 30%{ transform:translateX(-10px) rotate(4deg); } }
+
+#breaker{ z-index:26; left:924px; top:494px; width:44px; height:56px; padding:0; border:2px solid #6a6f78; border-radius:4px; background:#9aa0a8;
+  font:700 8px var(--mono); color:#222; cursor:pointer; opacity:0; pointer-events:none; }
+#breaker i{ display:block; width:10px; height:18px; margin:5px auto 3px; background:#c22; border-radius:2px; transform:translateY(5px); transition:transform .2s; }
+#breaker.on i{ transform:translateY(-3px); background:#2c2; }
+body.blackout #breaker{ opacity:1; pointer-events:auto; }
+
+#fx{ position:absolute; inset:0; pointer-events:none; z-index:30; }
+#fx .p{ position:absolute; left:0; top:0; width:8px; height:12px; border-radius:1px; }
+#fx .p.emo{ width:auto; height:auto; font-size:24px; background:none; }
+.dust{ position:absolute; left:-40px; right:-40px; top:430px; height:180px; pointer-events:none; z-index:25;
+  background:radial-gradient(60% 60% at 50% 80%, rgba(190,170,130,.75), transparent 70%); }
+
+/* lighting: a single overlay. --dim is how dark, (--sx,--sy,--sr) is the hole the light shines through */
+#fog{ position:absolute; inset:0; width:1000px; height:600px; pointer-events:none; opacity:0; clip-path:inset(0 100% 0 0); transition:clip-path 1.3s ease-out, opacity .2s; }
+#fog.in{ opacity:1; clip-path:inset(0 0 0 0); }
+#fog.gone{ opacity:0; transition:opacity 1.4s; }
+#lx{ position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle at var(--sx) var(--sy), rgba(255,236,190,.06) 0, rgba(0,0,0,0) var(--sr), rgba(4,2,3,var(--dim)) calc(var(--sr) + var(--soft)));
+  transition: --sx .7s cubic-bezier(.5,0,.3,1), --sy .7s cubic-bezier(.5,0,.3,1), --sr .5s, --dim .6s, --soft .5s; }
+#lx.snap,#lx.torch{ transition:none; }
+#lx.disco::after{ content:""; position:absolute; inset:0; mix-blend-mode:color; animation:disco .9s steps(1) infinite;
+  background:radial-gradient(circle at 20% 30%, #f0f 0 120px, transparent 260px), radial-gradient(circle at 75% 60%, #0ff 0 120px, transparent 260px), #ff0; }
+@keyframes disco{ 33%{ filter:hue-rotate(120deg); } 66%{ filter:hue-rotate(240deg); } }
+#lx.golden::after{ content:""; position:absolute; inset:0; background:radial-gradient(70% 70% at 50% 40%, rgba(255,214,140,.16), rgba(120,60,10,.12)); }
+
+#curtain{ position:absolute; left:-10px; right:-10px; top:-6px; height:620px; z-index:40; transform:translateY(0);
   background:
-    repeating-linear-gradient(90deg, var(--oxblood) 0 14px, var(--velvet) 14px 30px, var(--velvet-lit) 30px 34px, var(--velvet) 34px 48px);
-  box-shadow: inset 0 0 60px rgba(0,0,0,.7);
-  filter:brightness(.85);
+    linear-gradient(0deg, #8a6a2a 0 10px, var(--gold) 10px 14px, transparent 14px),
+    repeating-linear-gradient(90deg, var(--velvet-dk) 0 12px, var(--velvet) 12px 36px, var(--velvet-lt) 36px 42px, var(--velvet) 42px 62px, var(--velvet-dk) 62px 74px);
+  box-shadow: inset 0 0 80px rgba(0,0,0,.65), 0 10px 30px rgba(0,0,0,.6); }
+#curtain::after{ content:""; position:absolute; left:0; right:0; bottom:-12px; height:14px;
+  background:repeating-linear-gradient(90deg, var(--gold) 0 3px, transparent 3px 7px); opacity:.9; }
+#curtain.judder{ animation:judder .12s linear infinite; }
+@keyframes judder{ 50%{ margin-top:-6px; } }
+#valance{ position:absolute; left:0; right:0; top:0; height:38px; z-index:45;
+  background:linear-gradient(180deg, var(--velvet-dk), var(--velvet) 70%, var(--velvet-dk)); box-shadow:0 6px 12px rgba(0,0,0,.55); }
+#valance::after{ content:""; position:absolute; left:0; right:0; top:100%; height:20px;
+  background:radial-gradient(18px 20px at 25px 0, var(--velvet) 62%, transparent 64%) 0 0/50px 20px repeat-x; filter:drop-shadow(0 4px 2px rgba(0,0,0,.4)); }
+#valance::before{ content:""; position:absolute; left:0; right:0; bottom:2px; height:3px; background:var(--gold); opacity:.8; }
+
+/* overlays that sit on the stage but are not scaled (must stay legible on phones) */
+#hint{ position:absolute; left:50%; bottom:40px; z-index:5; transform:translate(-50%,20px); opacity:0; pointer-events:none;
+  background:var(--amber); color:#1a1205; font:700 13px/1.2 var(--sans); padding:9px 14px; border-radius:99px; box-shadow:0 10px 26px rgba(0,0,0,.5);
+  transition:opacity .25s, transform .25s; max-width:calc(100% - 32px); text-align:center; }
+#hint.show{ opacity:1; transform:translate(-50%,0); animation:nudge 1.6s ease-in-out .3s infinite; }
+@keyframes nudge{ 50%{ transform:translate(-50%,-4px); } }
+
+#report{ position:absolute; z-index:6; left:50%; top:0; width:min(400px,calc(100% - 32px)); transform:translate(-50%,-120%);
+  transform-origin:88% -60px; background:var(--paper); color:var(--paper-ink); border-radius:3px; padding:20px 22px 18px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6); font-family:var(--mono); transition:transform 1.4s cubic-bezier(.3,1.25,.5,1); }
+#report.in{ transform:translate(-50%,12%); }
+#report.in.crooked{ transform:translate(-50%,12%) rotate(5deg); transition:transform .9s cubic-bezier(.3,1.9,.5,1); }
+#report::before,#report::after{ content:""; position:absolute; bottom:100%; width:1px; height:1000px; background:rgba(255,255,255,.35); }
+#report::before{ left:12%; } #report::after{ right:12%; }
+#report.crooked::before{ display:none; }
+#report h2{ margin:0 0 2px; font-size:13px; letter-spacing:.24em; }
+#report .sub{ font-size:11px; opacity:.65; margin-bottom:12px; }
+#report dl{ display:grid; grid-template-columns:1fr auto; gap:5px 14px; margin:0 0 12px; font-size:13.5px; }
+#report dd{ margin:0; font-weight:700; text-align:right; }
+#report .rehearsed{ color:var(--redpencil); }
+#report blockquote{ margin:12px 0 14px; font-family:var(--hand); font-size:22px; line-height:1.05; color:var(--graphite); }
+#report button{ width:100%; border:0; border-radius:6px; padding:11px; cursor:pointer; background:var(--ink); color:var(--paper); font:700 13px var(--mono); letter-spacing:.14em; }
+
+/* ============================== THE PROMPT DESK ============================== */
+#desk{
+  position:relative; z-index:4; min-height:0; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr); gap:14px;
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg,#2a2d32,#1b1d21 14px,#17191c); border-top:1px solid #3a3e45;
+  box-shadow:0 -18px 40px rgba(0,0,0,.6);
 }
-.drape.left{ left:0; border-right:3px solid rgba(0,0,0,.4);
-  -webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);
-          mask-image:linear-gradient(90deg,#000 55%,transparent); }
-.drape.right{ right:0; border-left:3px solid rgba(0,0,0,.4);
-  -webkit-mask-image:linear-gradient(270deg,#000 55%,transparent);
-          mask-image:linear-gradient(270deg,#000 55%,transparent); }
-.valance{
-  position:absolute; top:0; left:0; right:0; height:46px;
-  background:linear-gradient(180deg,var(--oxblood),var(--velvet) 60%, transparent);
-  box-shadow: inset 0 -14px 24px rgba(0,0,0,.45);
+.dymo{ display:inline-block; background:#111; color:#e9e9e9; font:700 10px/1 var(--mono); letter-spacing:.16em; padding:4px 7px 3px; border-radius:2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 rgba(0,0,0,.5); text-transform:uppercase; }
+
+/* the prompt book */
+#book{ position:relative; min-height:0; overflow:auto; border-radius:3px; background:
+    linear-gradient(90deg, transparent 58px, rgba(194,53,43,.35) 58px 59px, transparent 59px),
+    repeating-linear-gradient(180deg, transparent 0 25px, rgba(60,90,140,.12) 25px 26px), var(--paper);
+  color:var(--paper-ink); box-shadow: inset 0 0 30px rgba(120,90,40,.22), 0 6px 18px rgba(0,0,0,.5); scroll-behavior:smooth;
+  scrollbar-width:thin; scrollbar-color:#b8a98a transparent; }
+#book .page{ padding:14px 16px 40vh 0; }
+#book .head{ padding:0 8px 8px 70px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; opacity:.7; }
+#book .note0{ margin:0 12px 14px 70px; font-family:var(--hand); font-size:21px; line-height:1.05; color:var(--graphite); transform:rotate(-.6deg); }
+#book .act{ padding:10px 8px 4px 70px; font-family:var(--mono); font-weight:700; font-size:12px; letter-spacing:.2em; }
+.entry{ position:relative; display:grid; grid-template-columns:70px 1fr; padding:8px 10px 10px 0; transition:background .3s; }
+.entry .qt{ justify-self:center; align-self:start; margin-top:2px; min-width:48px; text-align:center; border:1.5px solid var(--paper-ink); border-radius:3px;
+  font:700 10px/1 var(--mono); padding:4px 4px 3px; background:var(--paper); }
+.entry .qt b{ display:block; font-size:15px; margin-top:2px; }
+.entry .line{ margin:0; font-family:var(--mono); font-size:13.5px; }
+.entry .line b{ letter-spacing:.06em; margin-right:6px; }
+.entry .dir{ margin:2px 0 0; font-family:var(--mono); font-style:italic; font-size:13px; opacity:.75; text-decoration-color:var(--graphite); text-decoration-thickness:1.5px; }
+.entry .dir.struck{ text-decoration-line:line-through; }
+.entry .pencil{ margin:2px 0 0; font-family:var(--hand); font-size:20px; line-height:1.05; color:var(--graphite); opacity:.07;
+  transform:rotate(-.8deg); transform-origin:0 50%; }
+.entry .pencil.written{ opacity:1; animation:write 1.1s steps(18) both; }
+@keyframes write{ from{ clip-path:inset(0 100% 0 0); } to{ clip-path:inset(0 0 0 0); } }
+.entry .tick{ color:var(--redpencil); font-weight:700; margin-left:8px; white-space:nowrap; display:inline-block; animation:stamp .35s cubic-bezier(.3,1.8,.5,1) both; }
+@keyframes stamp{ from{ transform:scale(2.2) rotate(-10deg); opacity:0; } }
+.entry.standby{ background:linear-gradient(90deg, rgba(255,176,32,.0) 0, rgba(255,176,32,.28) 70px, rgba(255,176,32,.12)); }
+.entry.standby .qt{ background:var(--amber); }
+.entry.running{ background:linear-gradient(90deg, rgba(255,59,48,.0) 0, rgba(255,59,48,.2) 70px, rgba(255,59,48,.06)); }
+.entry.running .qt{ background:var(--red); color:#fff; border-color:var(--red); }
+.entry.torn{ clip-path:polygon(0 0,100% 0,100% 82%,93% 100%,84% 86%,71% 98%,58% 84%,44% 99%,31% 85%,18% 97%,7% 86%,0 95%); transform:rotate(.5deg); }
+
+/* the console */
+#console{ position:relative; min-height:0; display:grid; grid-template-rows:auto auto minmax(0,1fr); gap:10px; padding:12px; border-radius:6px;
+  background: linear-gradient(180deg,var(--metal-3),var(--metal-2) 40%, var(--metal)); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 6px 18px rgba(0,0,0,.5); }
+#console::before,#console::after{ content:""; position:absolute; top:6px; width:6px; height:6px; border-radius:50%; background:radial-gradient(circle at 35% 35%,#777,#222); }
+#console::before{ left:6px; } #console::after{ right:6px; }
+.ctop{ display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:12px; align-items:center; }
+.cuewin{ min-width:0; background:#0b0d0c; border-radius:4px; padding:7px 10px; box-shadow: inset 0 2px 8px rgba(0,0,0,.8); font-family:var(--mono); }
+.cuewin .k{ font-size:9.5px; letter-spacing:.2em; color:var(--label); }
+#qname{ font-size:22px; font-weight:700; color:#9dffbf; text-shadow:0 0 8px rgba(47,211,107,.45); line-height:1.05; }
+#qdesc{ font-size:11.5px; color:#8fd8a8; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lampwrap{ display:grid; justify-items:center; gap:5px; }
+#lamp{ width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 38% 32%, #555, #222 70%); box-shadow: inset 0 -2px 4px rgba(0,0,0,.6), 0 0 0 3px #111; transition:background .15s, box-shadow .15s; }
+#lamp.standby{ background:radial-gradient(circle at 38% 32%, #ffe3a0, var(--amber) 55%, #a86a00); box-shadow:0 0 0 3px #111, 0 0 18px var(--amber); animation:pulse 1.1s ease-in-out infinite; }
+#lamp.go{ background:radial-gradient(circle at 38% 32%, #c8ffd9, var(--green) 55%, #0d7a35); box-shadow:0 0 0 3px #111, 0 0 22px var(--green); }
+#lamp.run{ background:radial-gradient(circle at 38% 32%, #ffc2bd, var(--red) 55%, #8a120a); box-shadow:0 0 0 3px #111, 0 0 18px var(--red); }
+@keyframes pulse{ 50%{ box-shadow:0 0 0 3px #111, 0 0 4px var(--amber); filter:brightness(.8); } }
+#lamplbl{ font:700 9px var(--mono); letter-spacing:.16em; color:var(--label); }
+#go{ width:96px; height:72px; border:0; border-radius:10px; cursor:pointer; position:relative;
+  background:linear-gradient(180deg,#43e683,#1ea852); color:#04230f; font:800 28px/1 var(--sans); letter-spacing:.04em;
+  box-shadow:0 6px 0 #0d6a30, 0 10px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.5); transition:transform .06s, box-shadow .06s, filter .2s; }
+#go small{ display:block; font:700 9px var(--mono); letter-spacing:.18em; margin-top:4px; opacity:.7; }
+#go:active,#go.pressed{ transform:translateY(5px); box-shadow:0 1px 0 #0d6a30, 0 4px 8px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.5); }
+#go.wait{ filter:grayscale(.85) brightness(.6); }
+#go.ready{ animation:goglow 1.1s ease-in-out infinite; }
+@keyframes goglow{ 50%{ box-shadow:0 6px 0 #0d6a30, 0 0 26px rgba(47,211,107,.75), inset 0 1px 0 rgba(255,255,255,.5); } }
+#go.nope{ animation:no .3s; }
+@keyframes no{ 25%{ translate:-6px 0; } 75%{ translate:6px 0; } }
+.stats{ display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--label); }
+.stats b{ color:#f0e6cf; font-size:14px; letter-spacing:.04em; margin-left:4px; font-variant-numeric:tabular-nums; }
+#malf.bump{ animation:bump .3s; display:inline-block; }
+@keyframes bump{ 40%{ transform:scale(1.5); color:var(--red); } }
+#snd{ margin-left:auto; border:0; cursor:pointer; background:#111; color:#ddd; border-radius:4px; padding:5px 8px; font:700 10px var(--mono); letter-spacing:.14em; }
+#snd[aria-pressed="true"]{ color:#9dffbf; box-shadow:0 0 0 1px #2fd36b; }
+.cans{ min-height:0; overflow:hidden; background:#0d0e10; border-radius:4px; padding:7px 10px; box-shadow: inset 0 2px 8px rgba(0,0,0,.8); }
+.cans .k{ font:700 9.5px var(--mono); letter-spacing:.2em; color:var(--label); margin-bottom:4px; }
+#cans{ list-style:none; margin:0; padding:0; font-family:var(--mono); font-size:12px; line-height:1.35; }
+#cans li{ color:#cfd5dc; animation:in .3s ease; }
+#cans li:nth-child(n+2){ opacity:.6; } #cans li:nth-child(n+3){ opacity:.4; } #cans li:nth-child(n+4){ opacity:.25; }
+#cans li b{ color:var(--amber); font-weight:700; margin-right:6px; }
+@keyframes in{ from{ opacity:0; transform:translateY(-4px); } }
+
+/* ============================== SMALL SCREENS ============================== */
+@media (max-width:760px){
+  :root{ --desk-h:min(48dvh,330px); }
+  #theatre{ padding:8px 10px 0; background:linear-gradient(180deg,var(--house-2),var(--house)); }
+  #surtitle{ min-height:52px; }
+  #sur-who{ display:none; }
+  #desk{ grid-template-columns:1fr; grid-template-rows:auto minmax(0,1fr); gap:10px; padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
+  #console{ order:-1; grid-template-rows:auto auto; padding:10px; }
+  .cans{ display:none; }
+  #go{ width:84px; height:64px; }
+  .entry .line{ font-size:12.5px; } .entry .dir{ font-size:12px; }
+  #stagebox{ padding-bottom:20px; }
+  #audience{ height:40px; }
 }
-.valance::after{
-  content:""; position:absolute; left:0; right:0; bottom:-14px; height:22px;
-  background:
-    radial-gradient(14px 22px at 20px 0, var(--velvet-lit) 60%, transparent 62%) repeat-x;
-  background-size:40px 22px;
-  filter:drop-shadow(0 3px 2px rgba(0,0,0,.4));
-}
-
-/* ---------- Marquee header ---------- */
-.marquee{
-  position:relative; z-index:45; /* above the proscenium valance, so the sign is actually readable */
-  margin:78px auto 0; max-width:1080px; padding:0 26px;
-  display:flex; align-items:center; justify-content:space-between; gap:18px;
-}
-.bulbs{
-  position:absolute; left:26px; right:26px; top:-14px; height:8px;
-  background: radial-gradient(circle, var(--brass-bright) 0 40%, transparent 45%) repeat-x;
-  background-size:26px 8px;
-  animation: chase 1.1s linear infinite;
-  filter:drop-shadow(0 0 4px rgba(233,205,130,.8));
-}
-@keyframes chase{ to{ background-position:26px 0; } }
-.brand{
-  font-family:var(--display); font-weight:700; letter-spacing:.02em;
-  font-size:clamp(20px,3vw,30px); color:var(--brass-bright);
-  text-shadow:0 2px 0 rgba(0,0,0,.5); display:flex; align-items:baseline; gap:8px;
-}
-.brand .tm{ font-size:.5em; color:var(--ivory); opacity:.7; }
-.brand .screw{ display:inline-block; }
-nav.links{ display:flex; gap:20px; font-family:var(--sans); font-size:14px; letter-spacing:.02em; }
-nav.links a{ color:var(--ivory); opacity:.82; text-decoration:none; padding:4px 2px; border-bottom:1px solid transparent; transition:opacity .2s, border-color .2s; white-space:nowrap; }
-nav.links a:hover{ opacity:1; border-color:var(--brass); }
-
-/* ---------- Sections shell ---------- */
-main{ position:relative; z-index:5; max-width:1080px; margin:0 auto; padding:0 26px; }
-section{ margin:64px 0; }
-.eyebrow{
-  font-family:var(--mono); text-transform:uppercase; letter-spacing:.28em;
-  font-size:12px; color:var(--brass-bright); display:inline-flex; align-items:center; gap:10px;
-}
-.eyebrow .dot{ width:8px;height:8px;border-radius:50%;background:var(--danger);
-  box-shadow:0 0 8px var(--danger); animation:blink 1.2s steps(2) infinite; }
-@keyframes blink{ 50%{opacity:.25} }
-
-/* ---------- Hero ---------- */
-.hero{ text-align:center; padding-top:14px; }
-h1#headline{
-  font-family:var(--display); font-weight:700;
-  font-size:clamp(46px,10vw,120px); line-height:.92; margin:.28em auto .16em;
-  letter-spacing:.005em; text-wrap:balance; color:var(--ivory);
-  text-shadow:0 3px 0 rgba(0,0,0,.45), 0 0 44px rgba(201,162,75,.14);
-  position:relative;
-}
-h1#headline .caret{
-  display:inline-block; width:.06em; height:.86em; margin-left:.04em;
-  background:var(--brass-bright); vertical-align:-8%;
-  animation:caret 1s steps(2) infinite;
-}
-h1#headline .ltr{ display:inline-block; }
-h1#headline .word{ display:inline-block; white-space:nowrap; } /* letters may fall off, but words never split mid-line */
-@keyframes caret{ 50%{opacity:0} }
-.headline-foot{ font-family:var(--mono); font-size:13px; color:var(--hazard); min-height:1.2em; opacity:0; transition:opacity .3s; }
-.subhead{ font-family:var(--sans); font-size:clamp(16px,2.2vw,21px); color:#d9cdb0; max-width:60ch; margin:0 auto; opacity:.9; }
-
-.hero-visual{
-  margin:30px auto 8px; width:min(360px,72vw); aspect-ratio:4/3;
-  border-radius:16px; overflow:hidden; position:relative;
-  background:#0e0a0b; border:1px solid rgba(201,162,75,.35);
-  box-shadow:0 22px 60px rgba(0,0,0,.55), inset 0 0 0 6px rgba(0,0,0,.25);
-}
-.hero-visual svg,.hero-visual img{ width:100%; height:100%; display:block; }
-.hero-visual .cap{
-  position:absolute; left:0; right:0; bottom:0; padding:6px 10px; font-family:var(--mono);
-  font-size:11px; letter-spacing:.06em; background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);
-  color:var(--ivory);
-}
-.shimmer{ position:absolute; inset:0; background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.14) 50%,transparent 80%);
-  background-size:220% 100%; animation:shimmer 1.1s linear infinite; }
-@keyframes shimmer{ to{ background-position:-220% 0; } }
-
-.cta-row{ margin:34px 0 8px; display:flex; flex-direction:column; align-items:center; gap:10px; min-height:96px; }
-.btn{
-  font-family:var(--sans); font-weight:700; border:0; cursor:pointer; border-radius:999px;
-  padding:17px 40px; font-size:18px; letter-spacing:.02em; color:#fff;
-  background:linear-gradient(135deg,var(--slick-blue),var(--slick-blue2));
-  box-shadow:0 14px 34px rgba(47,107,255,.4), inset 0 1px 0 rgba(255,255,255,.35);
-  transition:transform .12s ease, box-shadow .2s;
-  white-space:nowrap;
-}
-.btn:hover{ transform:translateY(-1px); }
-.btn:active{ transform:translateY(1px); }
-.btn.big{ padding:20px 54px; font-size:22px; }
-.btn.ghost-note{ background:none; box-shadow:none; color:#a99; font-family:var(--mono); font-size:13px; font-weight:400; cursor:default; }
-.btn.secondary{ background:#241820; color:var(--ivory); box-shadow:inset 0 0 0 1px rgba(201,162,75,.4); }
-.btn.cowering{ box-shadow:0 0 0 2px var(--hazard), 0 10px 22px rgba(0,0,0,.4); }
-#launch.fleeing{ position:fixed; z-index:30; margin:0; }
-
-/* ---------- Slick "product" cards ---------- */
-.deck{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px; }
-.card{
-  background:var(--slick-bg); color:var(--slick-ink); border-radius:18px; padding:22px 22px 24px;
-  border:1px solid var(--slick-line); box-shadow:0 18px 44px rgba(0,0,0,.4);
-  font-family:var(--sans); position:relative;
-}
-.card h3{ margin:.1em 0 .5em; font-size:16px; letter-spacing:.01em; }
-.card .k{ font-size:12px; text-transform:uppercase; letter-spacing:.14em; color:var(--slick-sub); }
-
-.countdown .clock{ font-family:var(--mono); font-size:clamp(34px,6vw,58px); font-weight:700; letter-spacing:.04em;
-  color:var(--slick-ink); font-variant-numeric:tabular-nums; }
-.countdown .lbl{ min-height:1.3em; }
-.countdown .fixbtn{ margin-top:12px; font-family:var(--sans); font-size:13px; font-weight:700; border:0; cursor:pointer;
-  border-radius:8px; padding:8px 14px; background:#eef1f7; color:var(--slick-ink); box-shadow:inset 0 0 0 1px var(--slick-line); }
-
-.price .amt{ font-family:var(--display); font-size:clamp(38px,7vw,64px); font-weight:700; color:var(--slick-ink); line-height:1; }
-.price .amt.flick{ animation:neon 90ms steps(2) infinite; }
-@keyframes neon{ 50%{ opacity:.35; text-shadow:0 0 10px var(--hazard); } }
-.price .foot{ font-family:var(--mono); font-size:11px; color:var(--slick-sub); min-height:1.1em; margin-top:8px; }
-
-.badges{ display:flex; flex-wrap:wrap; gap:10px; }
-.badge{ font-family:var(--sans); font-size:12.5px; background:#eef1f7; color:var(--slick-ink);
-  border-radius:999px; padding:8px 14px; box-shadow:inset 0 0 0 1px var(--slick-line); }
-.badge b{ font-weight:800; }
-.badge .fine{ color:var(--slick-sub); }
-
-.quotes{ display:grid; gap:14px; }
-.quote{ font-family:var(--sans); background:var(--slick-bg); color:var(--slick-ink); border-radius:14px; padding:16px 18px;
-  border:1px solid var(--slick-line); }
-.quote .stars{ color:var(--hazard-yellow); letter-spacing:2px; }
-.quote .who{ font-size:12px; color:var(--slick-sub); margin-top:6px; }
-
-/* ---------- Signup form ---------- */
-.signup .form{ background:var(--slick-bg); color:var(--slick-ink); border-radius:20px; padding:26px 24px 28px;
-  border:1px solid var(--slick-line); box-shadow:0 20px 50px rgba(0,0,0,.42); font-family:var(--sans); max-width:560px; margin:0 auto; }
-.field{ margin:16px 0; position:relative; }
-.field label{ display:block; font-size:13px; font-weight:700; margin-bottom:7px; color:var(--slick-ink); }
-.field input[type=email]{ width:100%; padding:13px 15px; border-radius:11px; border:1.5px solid var(--slick-line);
-  font-size:15px; font-family:var(--sans); color:var(--slick-ink); background:#fff; transition:border-color .15s; }
-.field input.bad{ border-color:var(--danger); animation:shake .4s; }
-.field input.good{ border-color:#1aa251; }
-@keyframes shake{ 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(3px)} }
-.bubble{ position:absolute; right:0; top:-8px; transform:translateY(-100%);
-  background:var(--ink); color:var(--ivory); font-family:var(--mono); font-size:12px; padding:8px 11px; border-radius:10px;
-  max-width:260px; opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; box-shadow:0 8px 20px rgba(0,0,0,.4); }
-.bubble.show{ opacity:1; transform:translateY(-100%) translateY(-4px); }
-.bubble::after{ content:""; position:absolute; right:22px; bottom:-6px; border:6px solid transparent; border-top-color:var(--ink); }
-.verdict{ font-size:12.5px; margin-top:7px; min-height:1.1em; font-family:var(--mono); }
-.verdict.ok{ color:#1aa251; } .verdict.no{ color:var(--danger); }
-
-.consent{ margin-top:6px; }
-.consent .row{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; padding:7px 0; animation:slideIn .3s ease; }
-@keyframes slideIn{ from{ opacity:0; transform:translateX(-10px); } }
-.consent input[type=checkbox]{ margin-top:2px; width:17px; height:17px; accent-color:var(--slick-blue); flex:0 0 auto; }
-.consent .row.flash label{ animation:redflash .5s; }
-@keyframes redflash{ 0%,100%{color:var(--slick-ink)} 40%{color:var(--danger)} }
-.consent .tally{ font-family:var(--mono); font-size:12px; color:var(--slick-sub); margin-top:8px; }
-.mercy{ margin-top:12px; font-family:var(--sans); font-size:13px; font-weight:700; border:0; cursor:pointer; border-radius:9px;
-  padding:10px 15px; background:#fff3e6; color:#b4530a; box-shadow:inset 0 0 0 1px #ffcf9e; display:none; }
-
-.slider-wrap{ margin-top:6px; }
-.slider-wrap .val{ font-family:var(--mono); font-weight:700; color:var(--slick-blue); }
-.slider{ -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:99px;
-  background:linear-gradient(90deg,var(--slick-blue),var(--slick-blue2)); margin:14px 0 4px; outline:none; }
-.slider::-webkit-slider-thumb{ -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#fff;
-  box-shadow:0 3px 10px rgba(0,0,0,.35), inset 0 0 0 2px var(--slick-blue); cursor:grab; }
-.slider::-moz-range-thumb{ width:26px; height:26px; border-radius:50%; background:#fff; border:2px solid var(--slick-blue); cursor:grab; }
-.vu{ height:16px; border-radius:6px; margin-top:10px; background:#e9edf4; overflow:hidden; box-shadow:inset 0 0 0 1px var(--slick-line); }
-.vu > i{ display:block; height:100%; width:0%;
-  background:linear-gradient(90deg,#1aa251,#c9a24b 55%,var(--danger)); transition:width .05s linear; }
-.decoy-thumb{ position:fixed; z-index:31; width:26px; height:26px; border-radius:50%; background:#fff;
-  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 0 0 2px var(--slick-blue); cursor:grab; display:none; }
-
-/* ---------- Barnaby's booth ---------- */
-#booth{
-  position:fixed; left:0; right:0; bottom:0; z-index:60; height:var(--booth-h);
-  display:flex; align-items:center; gap:14px; padding:10px 18px;
-  background:linear-gradient(180deg,#160d10, #0c0708);
-  border-top:2px solid var(--brass); box-shadow:0 -14px 40px rgba(0,0,0,.6);
-}
-#avatar{ flex:0 0 auto; width:64px; height:64px; border-radius:50%; overflow:hidden;
-  background:radial-gradient(circle at 50% 30%, #2a1a1f, #120a0c); border:2px solid var(--brass);
-  box-shadow:0 0 0 3px rgba(0,0,0,.5), 0 0 22px rgba(201,162,75,.25); }
-#avatar svg{ width:100%; height:100%; display:block; }
-.caption{
-  flex:1 1 auto; min-width:0; align-self:stretch; display:flex; flex-direction:column; justify-content:center;
-}
-.caption .who{ font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--brass-bright); opacity:.85; }
-.caption .say{ font-family:var(--mono); font-size:clamp(13px,1.8vw,16px); color:var(--ivory); line-height:1.3;
-  min-height:1.3em; margin-top:2px; }
-.caption .say .cur{ display:inline-block; width:.5ch; background:var(--brass-bright); animation:caret .8s steps(2) infinite; }
-.hud{ flex:0 0 auto; display:flex; gap:14px; align-items:center; }
-.hud .stat{ font-family:var(--mono); font-size:11px; color:#c9bda0; text-align:right; line-height:1.25; }
-.hud .stat b{ display:block; font-size:16px; color:var(--hazard); font-variant-numeric:tabular-nums; }
-.hud .stat.days b{ color:var(--tech-cyan); }
-.hud button.icon{ width:38px; height:38px; border-radius:10px; border:0; cursor:pointer; background:#241820; color:var(--ivory);
-  font-size:16px; box-shadow:inset 0 0 0 1px rgba(201,162,75,.4); }
-.hud button.icon:hover{ background:#2f2028; }
-@media (max-width:720px){
-  .hud .stat.days{ display:none; }
-  #avatar{ width:52px; height:52px; }
-}
-
-/* ---------- Overlays ---------- */
-.curtain-half{ position:fixed; top:0; bottom:0; width:52vw; z-index:70; pointer-events:none;
-  background:
-    repeating-linear-gradient(90deg, var(--oxblood) 0 22px, var(--velvet) 22px 46px, var(--velvet-lit) 46px 52px, var(--velvet) 52px 74px);
-  box-shadow: inset 0 0 90px rgba(0,0,0,.75);
-}
-.curtain-half.l{ left:0; transform:translateX(-102%); }
-.curtain-half.r{ right:0; transform:translateX(102%); }
-.curtain-half.closing{ transition: transform 1.4s cubic-bezier(.6,.02,.3,1); transform:translateX(0); }
-.curtain-half.torn{ -webkit-mask-image:linear-gradient(180deg,#000 62%, transparent 62%),
-   linear-gradient(180deg,transparent 62%, #000 62%);
-   -webkit-mask-size:100% 100%, 100% 100%; }
-
-/* full-screen system overlays */
-.sys{ position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center; flex-direction:column;
-  text-align:center; padding:6vw; }
-.sys.show{ display:flex; }
-
-.bsod{ background:#0a5ad4; color:#fff; font-family:var(--sans); }
-.bsod .big{ font-size:clamp(48px,12vw,120px); line-height:1; }
-.bsod h2{ font-weight:400; font-size:clamp(20px,3.4vw,30px); max-width:22ch; margin:22px auto 6px; }
-.bsod .meta{ font-family:var(--mono); font-size:13px; opacity:.9; margin-top:18px; }
-.bsod .qr{ width:96px; height:96px; margin:20px auto 0; display:grid; grid-template-columns:repeat(11,1fr); gap:2px; background:#fff; padding:8px; border-radius:6px; }
-.bsod .qr i{ background:#0a5ad4; border-radius:1px; }
-.bsod .face{ font-size:clamp(56px,14vw,130px); display:inline-block; transition:transform .6s cubic-bezier(.5,1.7,.4,1); }
-.bsod.flip .face{ transform:rotate(180deg); }
-
-.update{ background:#0b3a86; color:#fff; font-family:var(--sans); }
-.update .spin{ width:60px; height:60px; border-radius:50%; border:6px solid rgba(255,255,255,.25); border-top-color:#fff; animation:spin 1s linear infinite; margin:0 auto 26px; }
-@keyframes spin{ to{ transform:rotate(360deg); } }
-.update h2{ font-weight:400; font-size:clamp(19px,3vw,26px); }
-.update .count{ font-family:var(--mono); font-size:clamp(15px,2.4vw,20px); margin-top:14px; font-variant-numeric:tabular-nums; }
-.update .ubar{ width:min(420px,80vw); height:10px; border-radius:99px; background:rgba(255,255,255,.2); margin:18px auto 0; overflow:hidden; }
-.update .ubar i{ display:block; height:100%; width:0%; background:#fff; }
-.update .warn{ color:#ff9a9a; }
-.update .boot{ font-family:var(--mono); font-size:13px; text-align:left; white-space:pre; max-width:520px; margin:0 auto; }
-
-.techdiff{ background:
-   repeating-linear-gradient(45deg,#12c2d6 0 40px,#0fb0c2 40px 80px);
-   color:#fff; font-family:"Impact","Arial Black",var(--sans); }
-.techdiff .word{ font-size:clamp(40px,10vw,96px); letter-spacing:.02em; line-height:1;
-  background:linear-gradient(180deg,#fff2b0,#ff5aa0 50%,#5a4bff);
-  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  text-shadow:0 4px 0 rgba(0,0,0,.25); transform:skewX(-6deg); filter:drop-shadow(3px 3px 0 #003); }
-.techdiff .globe{ margin:22px auto; width:120px; height:120px; }
-.techdiff .globe svg{ width:100%; height:100%; animation:spin 6s linear infinite; }
-.techdiff .ticker{ position:absolute; bottom:12%; left:0; right:0; overflow:hidden; white-space:nowrap;
-  font-family:var(--mono); font-size:20px; color:#042; background:#ffd21a; padding:8px 0; box-shadow:0 0 0 4px #003 inset; }
-.techdiff .ticker span{ display:inline-block; padding-left:100%; animation:scrollx 16s linear infinite; }
-@keyframes scrollx{ to{ transform:translateX(-100%); } }
-.techdiff .pbar{ width:min(420px,72vw); height:14px; background:#003; border-radius:99px; margin:8px auto 0; overflow:hidden; }
-.techdiff .pbar i{ display:block; height:100%; width:0%; background:#ffd21a; }
-.techdiff .skip{ position:absolute; top:18px; right:20px; font-family:var(--sans); font-size:13px; color:#003;
-  background:#fff; border:0; border-radius:8px; padding:8px 12px; cursor:pointer; font-weight:700; }
-/* every timed overlay gets the same "skip" affordance as the holding slide */
-.sysskip{ position:absolute; top:18px; right:20px; z-index:1; font-family:var(--sans); font-size:13px; font-weight:700;
-  color:var(--slick-ink); background:rgba(255,255,255,.92); border:0; border-radius:8px; padding:8px 12px; cursor:pointer; }
-
-/* generic modal (confirmation spiral, error-in-error) */
-#modals{ position:fixed; inset:0; z-index:88; display:none; }
-#modals.show{ display:block; }
-.modal{ position:fixed; left:50%; top:44%; width:min(400px,86vw); transform:translate(-50%,-50%);
-  background:var(--slick-bg); color:var(--slick-ink); border-radius:16px; padding:22px; font-family:var(--sans);
-  box-shadow:0 30px 80px rgba(0,0,0,.6); border:1px solid var(--slick-line); }
-.modal h3{ margin:0 0 6px; font-size:18px; }
-.modal.err h3{ color:var(--danger); }
-.modal p{ margin:6px 0 16px; font-size:14px; color:var(--slick-sub); }
-.modal .crumbs{ font-family:var(--mono); font-size:11px; color:var(--slick-sub); margin-bottom:10px; word-break:break-word; }
-.modal .row{ display:flex; gap:10px; flex-wrap:wrap; }
-.modal button{ font-family:var(--sans); font-weight:700; font-size:14px; border:0; cursor:pointer; border-radius:10px; padding:11px 16px; }
-.modal .yes{ background:linear-gradient(135deg,var(--slick-blue),var(--slick-blue2)); color:#fff; }
-.modal .no{ background:#eef1f7; color:var(--slick-ink); box-shadow:inset 0 0 0 1px var(--slick-line); }
-.modal .sure-slider{ width:100%; margin:6px 0 14px; accent-color:var(--slick-blue); }
-
-/* progress overachiever */
-.progress-wrap{ background:var(--slick-bg); color:var(--slick-ink); border-radius:18px; padding:22px; font-family:var(--sans);
-  border:1px solid var(--slick-line); box-shadow:0 18px 44px rgba(0,0,0,.4); }
-.progress-track{ height:20px; border-radius:99px; background:#e9edf4; margin:10px 0; overflow:visible; box-shadow:inset 0 0 0 1px var(--slick-line); position:relative; }
-.progress-track i{ display:block; height:100%; border-radius:99px; width:0%;
-  background:linear-gradient(90deg,var(--slick-blue),var(--slick-blue2)); transition:width .12s linear; }
-.progress-pct{ font-family:var(--mono); font-weight:700; font-variant-numeric:tabular-nums; }
-
-/* Please Stand By placard */
-#standby{ position:fixed; left:50%; bottom:0; z-index:80; transform:translate(-50%,110%); pointer-events:none;
-  width:min(340px,80vw); transition:transform .5s cubic-bezier(.34,1.56,.64,1); }
-#standby.up{ transform:translate(-50%,-6px) rotate(var(--sb-rot,-1deg)); }
-#standby svg{ width:100%; height:auto; display:block; filter:drop-shadow(0 12px 22px rgba(0,0,0,.5)); animation:sbwob 1.6s ease-in-out infinite; }
-@keyframes sbwob{ 0%,100%{transform:rotate(-1.5deg)} 50%{transform:rotate(1.5deg)} }
-
-/* fourth wall / backstage */
-#backstage{ position:fixed; inset:0; z-index:44; display:none;
-  background:
-    linear-gradient(180deg,#1c130d,#0d0906),
-    repeating-linear-gradient(90deg, #2a1c10 0 60px, #24170c 60px 66px);
-  color:#b9a06f; font-family:var(--mono); }
-#backstage.show{ display:block; }
-#fourthwall{ position:fixed; inset:0; z-index:46; transform-origin:50% 0%; pointer-events:none; display:none;
-  background:
-    repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 38px, transparent 38px 40px),
-    repeating-linear-gradient(90deg, #7c3b2a 0 92px, #6e3325 92px 96px, #7c3b2a 96px 188px);
-  box-shadow: inset 0 0 120px rgba(0,0,0,.5);
-  transition: transform 1s cubic-bezier(.7,0,.3,1); transform:rotateX(0deg); }
-#fourthwall.show{ display:block; }
-#fourthwall.fell{ transform:rotateX(86deg); }
-#fourthwall.raised{ transform:rotateX(2.4deg); }
-.perspective{ perspective:1400px; }
-
-/* comic sans emergency */
-html.comic *{ font-family:var(--wrong) !important; letter-spacing:0 !important; }
-html.comic .caption .say{ font-family:var(--wrong) !important; }
-#comic-mark{ position:fixed; right:14px; bottom:calc(var(--booth-h) + 12px); z-index:85; display:none;
-  font-family:var(--wrong); color:#fff; background:#d81b8c; padding:6px 12px; border-radius:8px; font-size:13px;
-  transform:rotate(-6deg); box-shadow:0 8px 20px rgba(0,0,0,.4); }
-#comic-mark.show{ display:block; }
-
-/* strike placards */
-.strike-tag{ position:absolute; top:-30px; left:50%; transform:translateX(-50%) rotate(-6deg);
-  background:#fff; color:#b00; font-family:var(--sans); font-weight:800; font-size:10px; letter-spacing:.06em;
-  padding:3px 6px; border-radius:3px; box-shadow:0 4px 10px rgba(0,0,0,.4); white-space:nowrap; }
-.strike-tag::before{ content:""; position:absolute; left:50%; top:100%; width:2px; height:14px; background:#7a4a22; transform:translateX(-50%); }
-
-/* fallen things */
-.fallen{ position:fixed; z-index:52; pointer-events:none; will-change:transform; }
-.fallen.letter{ font-family:var(--display); font-weight:700; color:var(--ivory); text-shadow:0 2px 0 rgba(0,0,0,.5); }
-
-/* confetti + fx layers */
-#confetti{ position:fixed; inset:0; pointer-events:none; z-index:82; }
-.conf{ position:fixed; width:11px; height:16px; will-change:transform; }
-#flash{ position:fixed; inset:0; z-index:95; background:#fff; opacity:0; pointer-events:none; }
-body.shake #stage{ animation:shake .5s; }
-
-/* finale */
-#finale{ position:fixed; inset:0; z-index:92; display:none; overflow:hidden;
-  background:radial-gradient(120% 90% at 50% 0%, rgba(201,162,75,.16), transparent 55%), linear-gradient(180deg,#160d10,#0a0608); }
-#finale.show{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6vw; }
-#finale h2{ font-family:var(--display); font-size:clamp(34px,7vw,72px); margin:0 0 10px; color:var(--brass-bright); text-wrap:balance; }
-#finale .speech{ font-family:var(--serif); font-size:clamp(16px,2.4vw,22px); max-width:44ch; min-height:3em; color:var(--ivory); }
-#credits{ position:absolute; left:0; right:0; bottom:0; top:100%; font-family:var(--mono); text-align:center; color:#d8c9a6; }
-#credits .roll{ position:absolute; top:0; left:0; right:0; }
-#credits h4{ color:var(--brass-bright); letter-spacing:.2em; margin:30px 0 6px; }
-#credits p{ margin:4px 0; font-size:14px; }
-#lightrig{ position:absolute; top:-160px; left:50%; width:220px; height:70px; transform:translateX(-50%);
-  background:linear-gradient(180deg,#333,#111); border-radius:6px; box-shadow:0 6px 0 #000;
-  display:flex; justify-content:space-around; align-items:flex-end; padding:0 12px 6px; }
-#lightrig i{ width:26px; height:26px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#fff6cf,#c9a24b); box-shadow:0 0 18px #e8c874; }
-#lightrig.crash{ animation:rigfall 1.1s cubic-bezier(.6,0,.4,1) forwards; }
-@keyframes rigfall{ to{ top:44%; transform:translateX(-50%) rotate(14deg); } }
-.encore{ margin-top:26px; }
-#encore-btn{ animation:glow 1.8s ease-in-out infinite; }
-@keyframes glow{ 50%{ box-shadow:0 0 30px rgba(47,107,255,.8), 0 14px 34px rgba(47,107,255,.4); } }
-#finale .tiny{ font-family:var(--mono); font-size:11px; opacity:.6; margin-top:8px; }
-
-/* rehearsal (cold open) scaffolding look */
-body.rehearsal{ background:#101315; }
-body.rehearsal #stage{ filter:none; }
-.rehearsal .marquee,.rehearsal .hero,.rehearsal section{ outline:1px dashed #3d4a52; outline-offset:6px; }
-.rehearsal .placeholder{ background:repeating-linear-gradient(45deg,#1b2126 0 14px,#161b20 14px 28px);
-  color:#6d7d88; font-family:var(--mono); border:1px dashed #3d4a52; border-radius:8px; padding:22px; text-align:center; }
-.rehearsal .hero-visual{ display:none; }
-.rehearsal h1#headline{ color:#54636d; font-family:var(--mono); font-size:clamp(28px,6vw,54px); }
-.hidden{ display:none !important; }
-
-/* accessibility: keyboard focus */
-a:focus-visible,button:focus-visible,input:focus-visible{ outline:3px solid var(--brass-bright); outline-offset:2px; }
-
-/* Small stages: the proscenium gets out of the way, nothing clickable wraps */
-@media (max-width:640px){
-  .drape{ width:7vw; opacity:.55; }
-  .marquee{ flex-wrap:wrap; justify-content:center; gap:10px 18px; }
-  nav.links{ flex-wrap:wrap; justify-content:center; gap:8px 14px; font-size:13px; }
-  .btn.big{ padding:16px 28px; font-size:18px; }
-  .eyebrow{ letter-spacing:.18em; text-align:center; }
-  .subhead{ padding:0 10px; }
-  .caption .who .role,.caption .who .title{ display:none; }
-  #booth{ height:auto; min-height:var(--booth-h); }
-  .caption .say{ font-size:12.5px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .eyebrow{ display:inline-block; }
-  .eyebrow .dot{ display:inline-block; vertical-align:middle; margin-right:8px; }
-}
-@media (max-width:420px){
-  .drape{ display:none; }
-  .btn.big{ padding:15px 22px; font-size:16px; }
-}
-
-/* Respect reduced motion: calm the ambient loops (gags still fire, just gentler) */
+@media (hover:none){ #go small{ display:none; } }
 @media (prefers-reduced-motion: reduce){
-  .bulbs,.shimmer,.techdiff .ticker span,.techdiff .globe svg,#encore-btn,.price .amt.flick,.eyebrow .dot{ animation:none; }
-  #stage{ transition:transform .6s ease; }
-  #standby svg{ animation:none; }
+  #lamp.standby,#go.ready,#hint.show,#audience.laugh .hd,#curtain.judder{ animation:none; }
 }
 </style>
 </head>
-<body class="rehearsal">
+<body class="house-up">
 
-<!-- =================== THE SET =================== -->
-<div id="stage">
+<!-- ======================================================================
+     THE THEATRE
+     ====================================================================== -->
+<section id="theatre" aria-label="The stage">
+  <div id="surtitle"><span id="sur-who">House</span><span id="sur-txt" aria-live="polite">Please silence your phones. Tonight's performance begins when the DSM calls it.</span></div>
 
-  <div id="proscenium" aria-hidden="true">
-    <div class="valance"></div>
-    <div class="drape left"></div>
-    <div class="drape right"></div>
-  </div>
+  <div id="stagebox">
+    <div id="frame">
+      <div id="set">
+        <div id="turn">
+          <!-- the front of the set: a product-launch website, built out of plywood and hope -->
+          <div id="front" class="face">
+            <div id="floor"></div>
 
-  <header class="marquee">
-    <div class="bulbs" aria-hidden="true"></div>
-    <div class="brand" id="brand">THE&nbsp;FUTURE<span class="tm">™</span></div>
-    <nav class="links" id="nav" aria-label="Primary">
-      <a href="#" data-nav>Product</a>
-      <a href="#" data-nav>Pricing</a>
-      <a href="#" data-nav>Story</a>
-      <a href="#" data-nav>Press</a>
-      <a href="#" data-nav>Contact</a>
-    </nav>
-  </header>
+            <div id="sandbag" class="piece" aria-hidden="true"><i class="rope"></i><div class="bag">20kg</div></div>
+            <div id="lantern" class="piece" aria-hidden="true"><svg viewBox="0 0 56 76"><rect x="26" y="-40" width="4" height="46" fill="#222"/><path d="M16 4h24l4 10H12z" fill="#2b2b2e"/><rect x="10" y="14" width="36" height="40" rx="4" fill="#1c1c1f"/><rect x="14" y="20" width="4" height="28" fill="#333"/><path d="M12 54h32l6 18H6z" fill="#2a2a2d"/><ellipse cx="28" cy="72" rx="22" ry="5" fill="#ffe7a6"/></svg></div>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero" id="hero">
-      <span class="eyebrow"><span class="dot"></span> LIVE · GRAND OPENING · ONE NIGHT ONLY</span>
-      <h1 id="headline"><span class="placeholder">HERO HEADLINE GOES HERE</span></h1>
-      <div class="headline-foot" id="headfoot"></div>
-      <p class="subhead" id="subhead">The single most important product ever unveiled on this or, frankly, any stage. Precision-engineered. Impeccably rehearsed. Absolutely ready.</p>
+            <nav id="nav" class="piece" aria-hidden="true">
+              <span id="logo">The&nbsp;Future<sup>™</sup></span>
+              <span class="links"><span class="lnk">Product</span><span class="lnk">Pricing</span><span class="lnk">Story</span><span class="lnk">Press</span><span class="lnk hot">Pre-order</span></span>
+            </nav>
+            <div id="eyebrow"><span>INTRODUCING · LIVE · ONE NIGHT ONLY</span></div>
+            <h1 id="headline" class="flown" aria-label="The Future"></h1>
+            <p id="sub"><span>Precision-engineered. Impeccably rehearsed. Absolutely ready.</span></p>
 
-      <div class="hero-visual" id="herovisual" role="img" aria-label="The product reveal image, which keeps loading the wrong thing">
-        <div class="shimmer"></div>
-      </div>
+            <div id="screen" class="piece"><div class="bezel"><div id="scr"></div></div><i class="stand"></i></div>
 
-      <div class="cta-row" id="ctarow">
-        <button class="btn big" id="launch">LAUNCH THE FUTURE</button>
-      </div>
-    </section>
+            <div id="pricebox" class="piece">
+              <div class="plbl">Introductory price</div>
+              <div class="reel"><div id="strip"></div></div>
+              <div id="pfoot"></div>
+            </div>
 
-    <!-- PITCH: countdown, price, badges, quotes -->
-    <section class="pitch">
-      <div class="deck">
-        <div class="card countdown" id="countdown">
-          <span class="k">Flash sale ends in</span>
-          <div class="clock" id="clock">00:10:00</div>
-          <div class="lbl k" id="clocklbl">Don't miss out</div>
-          <button class="fixbtn" id="fixtimer">Fix the timer</button>
-        </div>
+            <button id="cta" class="piece flown" tabindex="-1">PRE-ORDER<small id="ctacount">be the first</small></button>
 
-        <div class="card price" id="pricecard">
-          <span class="k">Introductory price</span>
-          <div class="amt" id="price">$49.99</div>
-          <div class="foot" id="pricefoot"></div>
-        </div>
+            <div id="cannon" class="piece" aria-hidden="true"><svg viewBox="0 0 64 50"><circle cx="16" cy="40" r="9" fill="#333"/><circle cx="16" cy="40" r="3" fill="#888"/><g transform="rotate(-24 16 32)"><rect x="8" y="22" width="52" height="18" rx="4" fill="#c22"/><rect x="54" y="20" width="8" height="22" rx="2" fill="#ffd23a"/><rect x="18" y="22" width="5" height="18" fill="#fff" opacity=".7"/><rect x="30" y="22" width="5" height="18" fill="#fff" opacity=".7"/></g></svg></div>
+            <button id="breaker" class="piece" tabindex="-1" aria-label="Mains switch"><i></i>MAINS</button>
 
-        <div class="card" id="badgecard">
-          <span class="k">Trusted by</span>
-          <div class="badges" id="badges" style="margin-top:12px">
-            <span class="badge"><b>99.9%</b> uptime<span class="fine">*ish</span></span>
-            <span class="badge"><b>SOC-2</b> <span class="fine">pending</span></span>
-            <span class="badge"><b>#1</b> product<span class="fine">*in this room</span></span>
-            <span class="badge"><b>4.9★</b><span class="fine"> /10</span></span>
+            <div id="barnaby" class="piece" aria-hidden="true">
+              <svg viewBox="0 0 90 224">
+                <rect x="30" y="148" width="13" height="70" fill="#1d1f2a"/><rect x="47" y="148" width="13" height="70" fill="#1d1f2a"/>
+                <ellipse cx="35" cy="219" rx="12" ry="4.5" fill="#0d0d10"/><ellipse cx="56" cy="219" rx="12" ry="4.5" fill="#0d0d10"/>
+                <g id="upper">
+                  <path d="M20 84 L8 140 L15 143 L28 98Z" fill="#262a3a"/><circle cx="11" cy="143" r="5" fill="#e8c3a2"/>
+                  <path d="M70 84 L80 128 L73 131 L62 98Z" fill="#262a3a"/><circle cx="77" cy="131" r="5" fill="#e8c3a2"/>
+                  <path d="M20 82 Q45 70 70 82 L73 156 L17 156Z" fill="#262a3a"/>
+                  <path d="M37 76 L45 102 L53 76Z" fill="#f2efe6"/>
+                  <path d="M43 80 L47 80 L48.5 112 L45 119 L41.5 112Z" fill="#c8343e"/>
+                  <rect x="40" y="62" width="10" height="15" fill="#e1b896"/>
+                  <ellipse cx="45" cy="46" rx="17" ry="20" fill="#e8c3a2"/>
+                  <path d="M28 44 Q29 21 46 23 Q63 22 63 44 Q57 31 46 32 Q34 31 28 44Z" fill="#5a3a26"/>
+                  <circle cx="39" cy="46" r="1.9" fill="#21160f"/><circle cx="52" cy="46" r="1.9" fill="#21160f"/>
+                  <rect x="35" y="40" width="8" height="2" rx="1" fill="#4a2f1e"/><rect x="48" y="40" width="8" height="2" rx="1" fill="#4a2f1e"/>
+                  <ellipse id="mouth" cx="45.5" cy="57" rx="4.2" ry="1.4" fill="#7a3530"/>
+                  <path d="M29 47 Q28 59 39 59" stroke="#111" stroke-width="1.6" fill="none"/><circle cx="39.5" cy="59" r="1.6" fill="#111"/>
+                </g>
+              </svg>
+            </div>
+
+            <div id="fx"></div>
+          </div>
+
+          <!-- the back of the set: nobody was supposed to see this -->
+          <div id="back" class="face" aria-hidden="true">
+            <div class="brace" style="left:90px; top:470px; transform:rotate(-38deg)"></div>
+            <div class="brace" style="left:600px; top:470px; transform:rotate(-38deg)"></div>
+            <div class="stencil" style="left:60px; top:150px; font-size:30px">THE FUTURE™ — FLAT 3 OF 3</div>
+            <div class="stencil" style="left:60px; top:196px; font-size:22px">THIS SIDE AWAY FROM AUDIENCE</div>
+            <div class="stencil" style="left:400px; top:540px; font-size:14px; transform:rotate(-2deg)">PROPERTY OF CORNLEY TECHNICAL — DO NOT PAINT</div>
+            <div class="note">KEVIN'S SANDWICH.<br>DO NOT EAT.<br>(this means you, Gary)</div>
+            <div class="emoji" style="left:860px; top:330px">🥪</div>
+            <div class="emoji" style="left:200px; top:300px; transform:rotate(-12deg)">☕</div>
+            <div class="tape" style="left:380px; top:268px; width:240px; transform:rotate(3deg)"></div>
+            <div class="stencil" style="left:400px; top:296px; font-size:13px; font-family:var(--hand); font-weight:500; font-size:22px; letter-spacing:0">← this tape is load-bearing</div>
           </div>
         </div>
+
+        <canvas id="fog" width="1000" height="600" aria-hidden="true"></canvas>
+        <div id="lx" aria-hidden="true"></div>
+        <div id="curtain" aria-hidden="true"></div>
+        <div id="valance" aria-hidden="true"></div>
       </div>
-
-      <div class="quotes" style="margin-top:22px">
-        <div class="quote"><span class="stars">★★★★★</span> — “I have never seen anything like it, and I would like to un-see it.” <div class="who" id="q1">— A. Critic, verified attendee</div></div>
-        <div class="quote"><span class="stars">★★★★★</span> — “Ten out of ten. The ten refers to the number of things that fell over.” <div class="who">— Local Newspaper (Arts &amp; Disasters desk)</div></div>
-      </div>
-    </section>
-
-    <!-- SIGNUP -->
-    <section class="signup" id="signup">
-      <div style="text-align:center; margin-bottom:16px">
-        <h2 class="eyebrow" style="margin:0; font-weight:400">Reserve your seat</h2>
-      </div>
-      <div class="form" id="signupform">
-        <div class="field" id="emailfield">
-          <label for="email">Email address</label>
-          <input type="email" id="email" placeholder="kevin@thefuture.example" autocomplete="off" spellcheck="false" />
-          <div class="bubble" id="emailbubble"></div>
-          <div class="verdict" id="emailverdict"></div>
-        </div>
-
-        <div class="field">
-          <label>Agreements</label>
-          <div class="consent" id="consent">
-            <div class="row"><input type="checkbox" id="agree0" /><label for="agree0">I agree to the Terms of Service.</label></div>
-          </div>
-          <div class="tally" id="tally">Agreements accepted: 0</div>
-          <button class="mercy" id="mercy">I agree to literally anything, please</button>
-        </div>
-
-        <div class="field slider-wrap">
-          <label>Excitement level: <span class="val" id="sval">50%</span></label>
-          <input type="range" min="0" max="100" value="50" class="slider" id="excite" />
-          <div class="vu"><i id="vu"></i></div>
-          <div class="decoy-thumb" id="decoy"></div>
-        </div>
-
-        <button class="btn" id="submit" style="width:100%; margin-top:10px">Reserve my seat</button>
-      </div>
-    </section>
-
-    <!-- PROGRESS (revealed during meltdown) -->
-    <section id="progresssec" class="hidden">
-      <div class="progress-wrap">
-        <div style="display:flex; justify-content:space-between; align-items:center; font-family:var(--sans); font-weight:700; color:var(--slick-ink)">
-          <span>Preparing the show…</span><span class="progress-pct" id="ppct">0%</span>
-        </div>
-        <div class="progress-track"><i id="pfill"></i></div>
-        <div style="font-family:var(--mono); font-size:12px; color:var(--slick-sub)" id="plbl">Warming up the fog machine.</div>
-      </div>
-    </section>
-  </main>
-</div>
-
-<!-- =================== BACKSTAGE / FOURTH WALL =================== -->
-<div id="backstage" aria-hidden="true">
-  <div style="position:absolute; top:14%; left:8%; font-size:13px">┌ exposed 2×4 stud ┐</div>
-  <div style="position:absolute; top:40%; left:20%; font-size:40px">🧑‍🔧</div>
-  <div style="position:absolute; top:30%; right:14%; font-size:13px; transform:rotate(6deg)">cable spaghetti →〰〰〰</div>
-  <div style="position:absolute; bottom:22%; left:12%; font-size:36px">☕</div>
-  <div style="position:absolute; bottom:20%; left:16%; font-size:11px">"STAGE MANAGER"</div>
-  <div style="position:absolute; bottom:30%; right:18%; font-size:13px; transform:rotate(-4deg)">📋 cue sheet (coffee-stained)</div>
-</div>
-<div id="fourthwall" aria-hidden="true"></div>
-
-<!-- =================== OVERLAYS =================== -->
-<div class="curtain-half l" id="curtainL" aria-hidden="true"></div>
-<div class="curtain-half r" id="curtainR" aria-hidden="true"></div>
-
-<div id="standby" aria-hidden="true"></div>
-
-<!-- generic modal stack -->
-<div id="modals"></div>
-
-<!-- update overlay -->
-<div class="sys update" id="update">
-  <button class="sysskip" id="upskip">skip ▸</button>
-  <div class="spin"></div>
-  <h2 id="uptitle">Installing critical showtime updates</h2>
-  <div style="font-family:var(--mono); font-size:13px; opacity:.85; margin-top:6px">Do not turn off your browser.</div>
-  <div class="count" id="upcount">Update 1 of 3,000,000</div>
-  <div class="ubar"><i id="upbar"></i></div>
-  <div class="boot hidden" id="upboot"></div>
-</div>
-
-<!-- BSOD overlay -->
-<div class="sys bsod" id="bsod">
-  <button class="sysskip" id="bsodskip">skip ▸</button>
-  <div class="big"><span class="face" id="bsodface">:(</span></div>
-  <h2 id="bsodmsg">Your launch ran into a problem and needs to collect itself.</h2>
-  <div style="font-family:var(--mono)"><span id="bsodpct">0</span>% complete</div>
-  <div class="qr" id="bsodqr" aria-hidden="true"></div>
-  <div class="meta" id="bsodmeta">For more information: theatreproblems.example / never<br>Stop code: STAGE_MANAGER_PANIC_0x1D10T</div>
-</div>
-
-<!-- technical difficulties -->
-<div class="sys techdiff" id="techdiff">
-  <button class="skip" id="tdskip">skip intermission »</button>
-  <div class="word">TECHNICAL<br>DIFFICULTIES</div>
-  <div class="globe" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#fff" stroke-width="2"/><ellipse cx="50" cy="50" rx="44" ry="16" fill="none" stroke="#fff" stroke-width="2"/><ellipse cx="50" cy="50" rx="20" ry="44" fill="none" stroke="#fff" stroke-width="2"/><line x1="6" y1="50" x2="94" y2="50" stroke="#fff" stroke-width="2"/></svg></div>
-  <div style="font-family:var(--sans); font-size:14px">Progress toward being fixed:</div>
-  <div class="pbar"><i id="tdbar"></i></div>
-  <div class="ticker"><span id="tdticker">Everything is under control ✦ We have a plan ✦ We do not have a plan ✦ Why are you still here ✦ Ok the plan is back on ✦</span></div>
-</div>
-
-<!-- finale -->
-<div id="finale">
-  <button class="sysskip" id="creditskip">skip credits ▸</button>
-  <div id="lightrig" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-  <h2 id="finaletitle">Curtain Call</h2>
-  <div class="speech" id="finalespeech"></div>
-  <div class="encore hidden" id="encorewrap">
-    <button class="btn big" id="encore-btn">ENCORE?</button>
-    <div class="tiny">It'll go perfectly this time. (it won't)</div>
+    </div>
+    <div id="hint" role="status"></div>
+    <div id="report" aria-live="polite"></div>
   </div>
-  <div id="credits"><div class="roll" id="creditroll"></div></div>
-</div>
+  <div id="audience" aria-hidden="true"></div>
+</section>
 
-<!-- fx -->
-<div id="confetti" aria-hidden="true"></div>
-<div id="comic-mark">now in Comic Sans</div>
-<div id="flash" aria-hidden="true"></div>
-
-<!-- =================== BARNABY'S BOOTH =================== -->
-<div id="booth">
-  <div id="avatar" aria-hidden="true"></div>
-  <div class="caption">
-    <div class="who">Barnaby Finch<span class="title"> · Deputy Stage Manager</span> <span class="role" style="opacity:.6">(acting head, temporarily)</span></div>
-    <div class="say" id="say" aria-live="polite" aria-atomic="true"><span class="cur">&nbsp;</span></div>
+<!-- ======================================================================
+     THE PROMPT DESK — you
+     ====================================================================== -->
+<section id="desk" aria-label="Prompt desk">
+  <div id="book" aria-label="Prompt book"><div class="page" id="page"></div></div>
+  <div id="console">
+    <div class="ctop">
+      <div class="cuewin"><div class="k">NEXT CUE</div><div id="qname">FLY 1</div><div id="qdesc">House out. Main curtain up.</div></div>
+      <div class="lampwrap"><div id="lamp" class="standby"></div><div id="lamplbl">STANDBY</div></div>
+      <button id="go" class="ready" aria-describedby="qdesc">GO<small>SPACE</small></button>
+    </div>
+    <div class="stats">
+      <span>CUE<b id="qcount">0/13</b></span>
+      <span>MALFUNCTIONS<b id="malf">0</b></span>
+      <span>RUN<b id="clock">00:00</b></span>
+      <button id="snd" aria-pressed="false" title="Listen in on the headset (sound)">CANS: OFF</button>
+    </div>
+    <div class="cans"><div class="k">CANS · HEADSET CHATTER</div><ol id="cans" aria-live="off"></ol></div>
   </div>
-  <div class="hud">
-    <div class="stat"><span>Malfunctions</span><b id="malfcount">0</b></div>
-    <div class="stat days"><span>Days since incident</span><b id="dayssince">0</b></div>
-    <button class="icon" id="mutebtn" title="Sound off — click for Barnaby's headset" aria-label="Toggle sound" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="spk-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" style="display:none"/><path id="spk-off" d="m16 9 5 6M21 9l-5 6"/></svg></button>
-  </div>
-</div>
+</section>
 
 <script>
-/* ============================================================================
-   THE CHAOS ENGINE
-   ========================================================================== */
 "use strict";
-document.body.classList.add('rehearsal'); // portable: works whether or not the markup sets the class
-const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const $  = (s,r=document)=>r.querySelector(s);
-const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const rand=(a,b)=>a+Math.random()*(b-a);
-const pick=a=>a[(Math.random()*a.length)|0];
+/* ============================================================================
+   ENGINE
+   ========================================================================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rand=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.random()*a.length|0];
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FLOOR=556;
+const SET=$('#set'), FRONT=$('#front'), TURN=$('#turn'), LX=$('#lx'), CURTAIN=$('#curtain'), FRAME=$('#frame');
+const HEAD=$('#headline'), SCR=$('#scr'), STRIP=$('#strip'), CTA=$('#cta'), BARN=$('#barnaby'), BREAKER=$('#breaker');
+const LTRS=()=>$$('#headline .ltr'), LINKS=()=>$$('#nav .lnk');
 
-/* ---------- Sound: tiny synth, unlocked on first gesture ---------- */
-const SFX = (()=>{
-  let ctx=null, on=false;
-  function ensure(){ if(!ctx){ try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
-  function unlock(){ ensure(); if(ctx&&ctx.state==='suspended') ctx.resume(); }
-  function tone(f,d,type='sine',g=.2,slideTo){ if(!on||!ctx) return;
-    const o=ctx.createOscillator(),v=ctx.createGain(); o.type=type; o.frequency.value=f;
-    if(slideTo) o.frequency.linearRampToValueAtTime(slideTo, ctx.currentTime+d);
-    v.gain.value=g; v.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+d);
-    o.connect(v).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+d); }
-  function noise(d,g=.3,filt=1200){ if(!on||!ctx) return;
-    const n=ctx.createBufferSource(), buf=ctx.createBuffer(1, ctx.sampleRate*d, ctx.sampleRate);
-    const dat=buf.getChannelData(0); for(let i=0;i<dat.length;i++) dat[i]=(Math.random()*2-1);
-    n.buffer=buf; const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=filt;
-    const v=ctx.createGain(); v.gain.value=g; v.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+d);
-    n.connect(f).connect(v).connect(ctx.destination); n.start(); n.stop(ctx.currentTime+d); }
+const S={ i:-1, running:false, done:false, malf:0, unsched:0, preorders:0, t0:0, skip:null, lastEarly:0, torch:false, fogArmed:false, mainsByUser:false };
+
+/* ---------- headline letters ---------- */
+'THE FUTURE'.split('').forEach(ch=>{ const s=document.createElement('span'); if(ch===' '){ s.className='sp'; } else { s.className='ltr'; s.textContent=ch; } HEAD.appendChild(s); });
+/* ---------- price reel ---------- */
+const REEL=['$ ——.——','$4,999,999','FREE?','−$12','¥ ∞','$0.03','ask Kevin','$49.98','🍋🍋🍋','$1M','a fiver','$49.99'];
+STRIP.innerHTML=REEL.map(v=>`<div>${v}</div>`).join('');
+
+/* ---------- fit the 1000×600 set into whatever space the theatre has ---------- */
+let K=1;
+function fit(){
+  const box=$('#stagebox'); const cs=getComputedStyle(box);
+  const w=box.clientWidth-24, h=box.clientHeight-parseFloat(cs.paddingBottom)-14;
+  K=Math.max(.1,Math.min(w/1000,h/600));
+  FRAME.style.width=1000*K+'px'; FRAME.style.height=600*K+'px'; SET.style.transform=`scale(${K})`;
+  drawAudience();
+}
+function toSet(e){ const r=FRAME.getBoundingClientRect(); return { x:(e.clientX-r.left)/K, y:(e.clientY-r.top)/K }; }
+
+/* ---------- the audience (front row silhouettes) ---------- */
+const SEATS=Array.from({length:80},()=>({j:rand(-6,6), r:rand(13,17)}));
+function drawAudience(){
+  const a=$('#audience'), W=a.clientWidth, H=a.clientHeight||60; let s='';
+  for(let i=0;i*40<W+40;i++){ const {j,r}=SEATS[i%SEATS.length]; const x=i*40+j, y=H-r*1.25;
+    s+=`<g class="hd" style="animation-delay:${(i%7)*.04}s"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*1.15}"/><path d="M${x-r*2} ${H} Q${x} ${y+r*.5} ${x+r*2} ${H}Z"/></g>`; }
+  a.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
+}
+function laugh(){ const a=$('#audience'); a.classList.remove('laugh'); void a.offsetWidth; a.classList.add('laugh'); }
+
+/* ---------- sound: a tiny synth, OFF until you put the cans on ---------- */
+const SFX=(()=>{
+  let ctx=null, on=false, out=null, nbuf=null;
+  function ensure(){ if(ctx) return; try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); out=ctx.createGain(); out.gain.value=.55; out.connect(ctx.destination);
+    nbuf=ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate); const d=nbuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; }catch(e){} }
+  function T(f,d,{type='sine',g=.2,to,at=0}={}){ if(!on||!ctx) return; const t=ctx.currentTime+at, o=ctx.createOscillator(), v=ctx.createGain();
+    o.type=type; o.frequency.setValueAtTime(f,t); if(to) o.frequency.exponentialRampToValueAtTime(to,t+d);
+    v.gain.setValueAtTime(g,t); v.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(v).connect(out); o.start(t); o.stop(t+d+.03); }
+  function N(d,{g=.3,f=1200,type='lowpass',at=0,to}={}){ if(!on||!ctx) return; const t=ctx.currentTime+at, n=ctx.createBufferSource(), fl=ctx.createBiquadFilter(), v=ctx.createGain();
+    n.buffer=nbuf; fl.type=type; fl.frequency.setValueAtTime(f,t); if(to) fl.frequency.exponentialRampToValueAtTime(to,t+d);
+    v.gain.setValueAtTime(g,t); v.gain.exponentialRampToValueAtTime(.001,t+d); n.connect(fl).connect(v).connect(out); n.start(t, Math.random(), d+.02); }
   return {
-    unlock, toggle(){ on=!on; unlock(); return on; }, get on(){ return on; },
-    creak(){ tone(90,.5,'sawtooth',.12,150); noise(.4,.08,500); },
-    thud(){ tone(120,.4,'sine',.35,40); noise(.18,.25,300); },
-    boing(){ tone(300,.5,'sine',.3,900); },
-    klaxon(){ tone(440,.16,'square',.25); setTimeout(()=>tone(330,.16,'square',.25),160); },
-    beep(){ tone(880,.12,'square',.2); },
-    pfft(){ tone(200,.25,'sine',.2,120); noise(.2,.1,900); },
-    whistle(){ tone(500,.6,'sine',.2,1400); },
-    applause(){ for(let i=0;i<14;i++) setTimeout(()=>noise(.12,.06,2200), i*40); },
-    pop(){ tone(600,.08,'sine',.25,200); },
-    ding(){ tone(1046,.5,'sine',.2); }
+    toggle(){ on=!on; if(on){ ensure(); ctx&&ctx.resume(); } return on; },
+    go(){ T(1320,.07,{type:'square',g:.06}); },
+    creak(){ T(70,.8,{type:'sawtooth',g:.06,to:150}); N(.7,{g:.04,f:500}); },
+    thud(){ T(110,.4,{g:.4,to:38}); N(.22,{g:.22,f:280}); },
+    tap(){ T(260,.05,{type:'triangle',g:.06,to:140}); },
+    whoosh(){ N(.8,{g:.16,f:300,type:'bandpass',to:2600}); },
+    pop(){ T(720,.07,{g:.16,to:260}); },
+    ding(){ T(1046,.7,{g:.12}); T(1568,.5,{g:.04}); },
+    doorbell(){ T(659,.7,{g:.18}); T(523,1,{g:.18,at:.45}); },
+    trombone(){ [392,370,349,311].forEach((f,i)=>T(f,i<3?.36:1,{type:'sawtooth',g:.06,at:i*.38,to:i<3?f*.985:f*.88})); },
+    fanfare(){ [[523,0],[659,.14],[784,.28],[1046,.42],[784,.62],[1046,.76]].forEach(([f,a],i)=>T(f,i===5?1:.16,{type:'square',g:.05,at:a})); },
+    cheer(){ for(let i=0;i<12;i++) N(.16,{g:.05,f:2600,type:'bandpass',at:i*.05}); },
+    applause(){ for(let i=0;i<80;i++) N(.06,{g:rand(.02,.05),f:rand(1800,4200),type:'bandpass',at:i*.04+rand(0,.03)}); },
+    thunk(){ T(60,.3,{type:'square',g:.18,to:30}); N(.1,{g:.3,f:900}); },
+    clunk(){ T(170,.1,{type:'square',g:.09,to:90}); },
+    boom(){ T(90,.7,{g:.5,to:30}); N(.6,{g:.4,f:1600}); },
+    clang(){ T(1200,.45,{type:'triangle',g:.1,to:900}); T(1730,.35,{type:'triangle',g:.05}); },
+    hiss(){ N(1.6,{g:.07,f:2500,type:'highpass'}); },
+    rumble(){ N(1.8,{g:.12,f:160}); },
+    ratchet(){ let a=0; for(let i=0;i<24;i++){ T(900,.03,{type:'square',g:.035,at:a}); a+=.04+i*.004; } },
+    jackpot(){ [784,988,1175,1568].forEach((f,i)=>T(f,.16,{type:'square',g:.05,at:i*.08})); },
+    ping(){ T(2400,.35,{g:.07,to:1800}); },
+    disco(){ for(let i=0;i<8;i++) T(i%2?123:82,.14,{type:'square',g:.07,at:i*.22}); },
   };
 })();
 
-/* ---------- Barnaby: the caption bar + avatar ---------- */
-const Barnaby = (()=>{
-  const el = $('#say'); const avatar = $('#avatar');
-  let queue=[], typing=false, lastAmbient=0, mood='calm';
-  const MOODS={ calm:'😊', worried:'😨', done:'😑', proud:'🥲', panic:'😱' };
-  // draw avatar (SVG face w/ headset)
-  function draw(){
-    avatar.innerHTML = `<svg viewBox="0 0 64 64">
-      <g id="ava-head">
-        <ellipse cx="32" cy="34" rx="17" ry="19" fill="#e9c6a8"/>
-        <path d="M15 30 Q32 8 49 30" fill="#5a3b28"/>
-        <g id="ava-brows" fill="#4a2f1e">
-          <rect id="brL" x="20" y="27" width="9" height="2.6" rx="1.3"/>
-          <rect id="brR" x="35" y="27" width="9" height="2.6" rx="1.3"/>
-        </g>
-        <circle cx="24.5" cy="33" r="2.1" fill="#2a1a12"/>
-        <circle cx="39.5" cy="33" r="2.1" fill="#2a1a12"/>
-        <path id="ava-mouth" d="M25 43 Q32 47 39 43" stroke="#7a3b30" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <path d="M14 32 Q10 34 12 40" stroke="#111" stroke-width="3" fill="none"/>
-        <rect x="9" y="38" width="6" height="4" rx="2" fill="#111"/>
-        <path d="M15 15 Q32 2 49 15" stroke="#111" stroke-width="3.4" fill="none"/>
-      </g>
-    </svg>`;
+/* ---------- surtitles (Barnaby speaks, sound cues are captioned) ---------- */
+const Sur=(()=>{
+  const who=$('#sur-who'), txt=$('#sur-txt'); let token=0;
+  async function say(text,{by='Barnaby',hold}={}){
+    const t=++token; who.textContent=by; txt.textContent=''; BARN.classList.add('talking');
+    for(let i=1;i<=text.length;i++){ if(t!==token) break; txt.textContent=text.slice(0,i); await wait(RM?0:19); }
+    BARN.classList.remove('talking');
+    await wait(hold ?? Math.min(1700, 450+text.length*16));
   }
-  draw();
-  function setMood(m){ mood=m;
-    const mo=$('#ava-mouth'), brL=$('#brL'), brR=$('#brR');
-    if(!mo) return;
-    if(m==='panic'||m==='worried'){ mo.setAttribute('d','M25 45 Q32 40 39 45'); brL.setAttribute('y','24'); brR.setAttribute('y','24'); }
-    else if(m==='done'){ mo.setAttribute('d','M25 44 L39 44'); brL.setAttribute('y','27'); brR.setAttribute('y','27'); }
-    else if(m==='proud'){ mo.setAttribute('d','M24 42 Q32 49 40 42'); brL.setAttribute('y','26'); brR.setAttribute('y','26'); }
-    else { mo.setAttribute('d','M25 43 Q32 47 39 43'); brL.setAttribute('y','27'); brR.setAttribute('y','27'); }
-  }
-  function whip(){ // panic whip-turn
-    const g=$('#ava-head'); if(!g) return;
-    g.style.transformOrigin='32px 34px'; g.animate(
-      [{transform:'rotateY(0)'},{transform:'rotateY(180deg)'},{transform:'rotateY(0)'}],
-      {duration:600, easing:'ease-in-out'});
-  }
-  function typeNext(){
-    if(!queue.length){ typing=false; return; }
-    typing=true;
-    const {text,m}=queue.shift();
-    if(m) setMood(m);
-    let i=0; el.innerHTML='';
-    const cur=document.createElement('span'); cur.className='cur'; cur.innerHTML='&nbsp;';
-    const span=document.createElement('span'); el.appendChild(span); el.appendChild(cur);
-    const speed = RM?0:16;
-    (function step(){
-      span.textContent = text.slice(0,i);
-      if(i<text.length){ i++; setTimeout(step, speed+ (text[i-1]===' '?10:0)); }
-      else { setTimeout(()=>{ if(queue.length){ typeNext(); } else { typing=false; } }, Math.min(2600, 900+text.length*22)); }
-    })();
-  }
-  function say(text,{mood:m, ambient=false, force=false}={}){
-    const now=Date.now();
-    if(ambient){ if(now-lastAmbient<4200) return; lastAmbient=now; }
-    if(force){ queue=[{text,m}]; typing=false; typeNext(); return; }
-    queue.push({text,m}); if(!typing) typeNext();
-  }
-  return { say, setMood, whip };
+  function sfx(text){ token++; BARN.classList.remove('talking'); who.textContent='Sound'; txt.innerHTML=`<span class="sfxl">${text}</span>`; }
+  function sfxWrong(text){ const s=txt.querySelector('.sfxl:not(.struck)'); if(s) s.classList.add('struck'); txt.insertAdjacentHTML('beforeend',` <span class="sfxl fix">${text}</span>`); }
+  return { say, sfx, sfxWrong };
 })();
+const say=(t,o)=>Sur.say(t,o);
 
-/* ---------- Counters HUD ---------- */
-const Meter = (()=>{
-  let n=0; const cEl=$('#malfcount'); const dEl=$('#dayssince');
-  function bump(k=1){ n+=k; cEl.textContent=n; cEl.animate?cEl.animate([{transform:'scale(1.5)',color:'#fff'},{transform:'scale(1)'}],{duration:280}):0; dEl.textContent='0'; return n; }
-  return { bump, get n(){return n;} };
-})();
+/* ---------- headset chatter ---------- */
+function cans(who,text){ const ol=$('#cans'), li=document.createElement('li'); li.innerHTML=`<b>${who}</b>${text}`; ol.prepend(li); while(ol.children.length>5) ol.lastChild.remove(); }
 
-/* ---------- Chaos level / escalation bus ---------- */
-const Chaos = (()=>{
-  let lvl=0; const fired=new Set();
-  const milestones=[];
-  function on(atLevel, fn){ milestones.push({at:atLevel, fn, id:fn}); }
-  function escalate(by=1){
-    lvl+=by;
-    milestones.forEach(m=>{ if(lvl>=m.at && !fired.has(m.fn)){ fired.add(m.fn); try{m.fn(lvl);}catch(e){console.warn(e);} } });
+/* ---------- HUD ---------- */
+function malf(n=1){ S.malf+=n; const m=$('#malf'); m.textContent=S.malf; m.classList.remove('bump'); void m.offsetWidth; m.classList.add('bump'); }
+function setLamp(state){ const l=$('#lamp'); l.className=state; $('#lamplbl').textContent={standby:'STANDBY',go:'GO',run:'RUNNING',down:'SHOW DOWN','':'—'}[state]||state.toUpperCase(); }
+function tickClock(){ if(!S.t0) return; const s=(Date.now()-S.t0)/1000|0; $('#clock').textContent=`${String(s/60|0).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+function hint(text){ const h=$('#hint'); if(text){ h.textContent=text; h.classList.add('show'); } else h.classList.remove('show'); }
+function shake(){ if(RM) return; FRAME.animate([{translate:'0 0'},{translate:'-7px 3px'},{translate:'6px -2px'},{translate:'-3px 1px'},{translate:'0 0'}],{duration:380}); }
+
+/* ---------- lighting ---------- */
+function light({x,y,r,dim,soft,snap}={}){
+  if(snap) LX.classList.add('snap');
+  const s=LX.style;
+  if(x!=null) s.setProperty('--sx',x+'px'); if(y!=null) s.setProperty('--sy',y+'px');
+  if(r!=null) s.setProperty('--sr',r+'px'); if(soft!=null) s.setProperty('--soft',soft+'px'); if(dim!=null) s.setProperty('--dim',dim);
+  if(snap) requestAnimationFrame(()=>requestAnimationFrame(()=>LX.classList.remove('snap')));
+}
+const WASH={ dim:0, r:1200, soft:60 };
+
+/* ---------- physics: things fall off the set and stay there (until the finale) ---------- */
+const Phys=(()=>{
+  const bodies=new Set(); let raf=0, lastTap=0;
+  function layout(el){ let x=0,y=0,n=el; while(n && n!==FRONT){ x+=n.offsetLeft; y+=n.offsetTop; n=n.offsetParent; } return {x,y}; }
+  function center(el){ const b=el._body, p=layout(el); return b? { x:p.x+b.dx+b.w/2, y:p.y+b.dy+b.h/2 } : { x:p.x+el.offsetWidth/2, y:p.y+el.offsetHeight/2 }; }
+  function drop(el,{vx=rand(-1.5,1.5),vy=0,va=rand(-6,6),onLand}={}){
+    if(el._body) return;
+    const p=layout(el), b={ el, x0:p.x, y0:p.y, w:el.offsetWidth, h:el.offsetHeight, dx:0, dy:0, vx, vy, a:0, va, rest:false, landed:false, onLand };
+    el._body=b; el.style.transition='none'; el.style.animation='none'; el.style.transformOrigin='50% 50%'; el.classList.add('debris'); bodies.add(b);
+    if(!raf) raf=requestAnimationFrame(tick);
   }
-  return { on, escalate, get level(){return lvl;}, reset(){ lvl=0; fired.clear(); } };
-})();
-
-/* ---------- Physics: falling elements & letters ---------- */
-const Physics = (()=>{
-  let bodies=[], running=false;
-  const floorPad=90; // sit above the booth
   function tick(){
-    const H=innerHeight - floorPad;
-    for(const b of bodies){
-      if(b.settled) continue;
-      b.vy += b.g; b.y+=b.vy; b.x+=b.vx; b.a+=b.va;
-      const bottom = H - b.h;
-      if(b.y>=bottom){ b.y=bottom; b.vy*=-0.32; b.vx*=0.6; b.va*=0.5;
-        if(Math.abs(b.vy)<1.4){ b.settled=true; b.vy=0; b.va=0; } }
-      if(b.x<2){ b.x=2; b.vx*=-.5; } if(b.x>innerWidth-b.w-2){ b.x=innerWidth-b.w-2; b.vx*=-.5; }
-      b.node.style.transform=`translate(${b.x}px,${b.y}px) rotate(${b.a}deg)`;
+    let moving=false;
+    for(const b of bodies){ if(b.rest) continue; moving=true;
+      b.vy+=.85; b.dx+=b.vx; b.dy+=b.vy; b.a+=b.va;
+      const rad=b.a*Math.PI/180, ext=(b.w*Math.abs(Math.sin(rad))+b.h*Math.abs(Math.cos(rad)))/2;
+      const floorDy=FLOOR-b.y0-b.h/2-ext;
+      if(b.dy>=floorDy){ b.dy=floorDy;
+        if(!b.landed){ b.landed=true; b.onLand&&b.onLand(); }
+        if(Math.abs(b.vy)>3.2){ b.vy*=-.32; b.vx*=.6; b.va*=.45; const now=performance.now(); if(now-lastTap>70){ lastTap=now; SFX.tap(); } }
+        else { b.vy=0; b.vx*=.5; b.va=0; b.rest=true; } }
+      const minDx=-b.x0+2, maxDx=1000-b.x0-b.w-2;
+      if(b.dx<minDx){ b.dx=minDx; b.vx*=-.5; } if(b.dx>maxDx){ b.dx=maxDx; b.vx*=-.5; }
+      b.el.style.transform=`translate(${b.dx}px,${b.dy}px) rotate(${b.a}deg)`;
     }
-    bodies=bodies.filter(b=>!b.remove);
-    if(bodies.some(b=>!b.settled)) requestAnimationFrame(tick); else running=false;
+    raf=moving? requestAnimationFrame(tick) : 0;
   }
-  function start(){ if(!running){ running=true; requestAnimationFrame(tick); } }
-  function dropNode(node,{vx,vy=0,va,g}={}){
-    const r=node.getBoundingClientRect();
-    node.style.position='fixed'; node.style.left='0'; node.style.top='0'; node.style.margin='0';
-    node.style.width=r.width+'px'; node.style.height=r.height+'px';
-    const b={ node, x:r.left, y:r.top, w:r.width, h:r.height,
-      vx: vx??rand(-2,2), vy, va: va??rand(-8,8), a:0, g: g??(RM?.5:.9), settled:false };
-    node.style.transform=`translate(${b.x}px,${b.y}px)`;
-    bodies.push(b); start(); return b;
+  function restore(el,delay=0){
+    const b=el._body; if(b) bodies.delete(b); el._body=null;
+    el.style.animation='none';
+    el.style.transition=`transform ${RM?.3:.85}s cubic-bezier(.3,1.45,.5,1) ${delay}ms`;
+    el.style.transform='';
+    setTimeout(()=>{ el.classList.remove('debris'); el.style.transformOrigin=''; SFX.tap(); }, delay+500);
   }
-  // pop an existing on-page element off (leaves it in-place hidden)
-  function popOff(orig,{bolt=true}={}){
-    const clone=orig.cloneNode(true); clone.classList.add('fallen');
-    document.body.appendChild(clone);
-    orig.style.visibility='hidden';
-    SFX.pop();
-    if(bolt){ const s=document.createElement('div'); s.className='fallen'; s.textContent='🔩';
-      s.style.fontSize='20px'; document.body.appendChild(s);
-      const r=orig.getBoundingClientRect(); s.style.left='0'; s.style.top='0';
-      s.animate?s.animate([{transform:`translate(${r.left}px,${r.top}px)`},{transform:`translate(${r.left+30}px,${r.top-40}px)`},{transform:`translate(${r.left+50}px,${innerHeight-120}px)`}],{duration:900,easing:'ease-in'}):0;
-      setTimeout(()=>s.remove(),950); }
-    dropNode(clone,{vx:rand(-3,3),va:rand(-10,10)});
-    Meter.bump();
-  }
-  function reset(){ $$('.fallen').forEach(n=>n.remove()); bodies=[]; }
-  return { dropNode, popOff, reset };
+  return { drop, restore, center, layout, get fallen(){ return [...bodies].map(b=>b.el); } };
 })();
 
-/* ---------- Confetti / pyro ---------- */
-const Confetti = (()=>{
-  const layer=$('#confetti'); let parts=[], running=false, continuous=false;
-  const colors=['#ff6a1a','#12c2d6','#ffd21a','#2f6bff','#e0263b','#c9a24b','#7b3cff','#1aa251'];
-  function tick(){
-    for(const p of parts){ p.vy+=.18; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vx*=.99;
-      p.node.style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.rot}deg)`;
-      if(p.y>innerHeight+40||p.x<-40||p.x>innerWidth+40){ p.dead=true; p.node.remove(); } }
-    parts=parts.filter(p=>!p.dead);
-    if(continuous) spawn(2, innerWidth/2, -10, {spread:innerWidth});
-    if(parts.length){ requestAnimationFrame(tick); } else running=false;
-  }
-  function start(){ if(!running){ running=true; requestAnimationFrame(tick); } }
-  function spawn(n,x,y,{spread=120, vx0=0, vy0=-4, sideways=false}={}){
-    const cap=RM?Math.min(n,6):n;
-    for(let i=0;i<cap;i++){ const el=document.createElement('div'); el.className='conf';
-      el.style.background=pick(colors); if(Math.random()<.3) el.style.borderRadius='50%';
+/* ---------- particles (confetti, lemons) in set coordinates ---------- */
+const FXP=(()=>{
+  const layer=$('#fx'); let parts=[], raf=0;
+  const COL=['#ff6a1a','#3550ff','#ffd23a','#e0263b','#c9a35a','#7a3cff','#1aa251','#12c2d6'];
+  function spawn(x,y,{n=30,vx=[-4,4],vy=[-9,-3],g=.28,emoji,life=170}={}){
+    const cap=RM?Math.min(n,12):n;
+    for(let k=0;k<cap;k++){ const el=document.createElement('i'); el.className='p';
+      if(emoji){ el.classList.add('emo'); el.textContent=pick(emoji); } else { el.style.background=pick(COL); if(Math.random()<.3) el.style.borderRadius='50%'; }
       layer.appendChild(el);
-      parts.push({ node:el, x:x+rand(-spread/2,spread/2), y,
-        vx: sideways? rand(6,12) : vx0+rand(-4,4),
-        vy: sideways? rand(-3,1) : vy0-rand(0,6), rot:rand(0,360), vr:rand(-12,12), dead:false }); }
-    start();
+      parts.push({ el, x:x+rand(-6,6), y:y+rand(-6,6), vx:rand(...vx), vy:rand(...vy), g, a:rand(0,360), va:rand(-14,14), life:life+rand(-30,30) }); }
+    if(!raf) raf=requestAnimationFrame(tick);
   }
-  function burst(x,y,n=60){ spawn(n,x,y,{spread:40, vy0:-9}); }
-  function pfft(x,y){ SFX.pfft(); spawn(3,x,y,{spread:14, vy0:-3}); }
-  function sideways(){ spawn(30, 90, innerHeight*0.4, {sideways:true, spread:20}); }
-  function rain(on){ continuous=on; if(on){ SFX.applause(); start(); } }
-  function clearAll(){ parts.forEach(p=>p.node.remove()); parts=[]; continuous=false; }
-  return { burst, pfft, sideways, rain, clearAll, spawn };
-})();
-
-/* ---------- Please Stand By placard ---------- */
-const StandBy = (()=>{
-  const el=$('#standby'); let n=0, timer=null;
-  const variants=[
-    {t:'PLEASE STAND BY', sub:'', stain:0, hand:'✋'},
-    {t:'PLEASE KEEP STANDING BY', sub:'(nearly there)', stain:.15, hand:'✋'},
-    {t:'STAND BY. I MEAN IT.', sub:'', stain:.3, hand:'🖐'},
-    {t:'ok this is bad', sub:'— B.', stain:.55, hand:'☕'},
-    {t:'STANBdY', sub:'(written in eyeliner)', stain:.7, hand:'💄'}
-  ];
-  function show(){
-    const v=variants[Math.min(n,variants.length-1)]; n++;
-    el.style.setProperty('--sb-rot', rand(-3,3)+'deg');
-    el.innerHTML=`<svg viewBox="0 0 340 150">
-      <rect x="6" y="10" width="328" height="120" rx="8" fill="#d8c39a" stroke="#7a5a2a" stroke-width="3"/>
-      <rect x="6" y="10" width="328" height="120" rx="8" fill="rgba(90,40,10,${v.stain*0.5})"/>
-      <rect x="60" y="4" width="70" height="20" rx="3" fill="rgba(220,220,220,.7)" transform="rotate(-4 95 14)"/>
-      <rect x="215" y="6" width="70" height="18" rx="3" fill="rgba(220,220,220,.7)" transform="rotate(3 250 15)"/>
-      <text x="170" y="${v.sub?70:80}" text-anchor="middle" font-family="Courier New, monospace" font-weight="bold" font-size="${v.t.length>16?24:30}" fill="#3a2410">${v.t}</text>
-      ${v.sub?`<text x="170" y="100" text-anchor="middle" font-family="Courier New, monospace" font-size="14" fill="#6a4a2a">${v.sub}</text>`:''}
-      <text x="30" y="138" font-size="30">${v.hand}</text>
-      <text x="300" y="138" font-size="30">${v.hand}</text>
-    </svg>`;
-    el.classList.add('up');
-    clearTimeout(timer); timer=setTimeout(hide, 2600);
+  function tick(){
+    for(const p of parts){ p.vy+=p.g; p.vx*=.992; p.x+=p.vx; p.y+=p.vy; p.a+=p.va; p.life--;
+      if(p.y>FLOOR-6){ p.y=FLOOR-6; p.vy=0; p.vx*=.8; p.va*=.8; }
+      p.el.style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.a}deg)`; if(p.life<40) p.el.style.opacity=Math.max(0,p.life/40);
+      if(p.life<=0){ p.el.remove(); p.dead=true; } }
+    parts=parts.filter(p=>!p.dead); raf=parts.length? requestAnimationFrame(tick) : 0;
   }
-  function hide(){ el.classList.remove('up'); }
-  el.addEventListener('click',hide);
-  return { show };
+  return { spawn };
+})();
+function dust(){ const d=document.createElement('div'); d.className='dust'; FRONT.appendChild(d);
+  d.animate([{opacity:0,transform:'scaleY(.4)'},{opacity:1,offset:.2},{opacity:0,transform:'scaleY(1.3)'}],{duration:1800,easing:'ease-out'}).onfinish=()=>d.remove(); }
+
+/* ---------- fog that you have to waft away ---------- */
+const Fog=(()=>{
+  const c=$('#fog'), g=c.getContext('2d'); let wipes=0, onDone=null;
+  function paint(){ g.globalCompositeOperation='source-over'; g.clearRect(0,0,1000,600);
+    g.fillStyle='rgba(226,230,236,.72)'; g.fillRect(0,0,1000,600);
+    for(let i=0;i<120;i++){ const x=rand(-60,1060), y=rand(-60,660), r=rand(80,210), gr=g.createRadialGradient(x,y,0,x,y,r);
+      gr.addColorStop(0,'rgba(248,250,252,.6)'); gr.addColorStop(1,'rgba(248,250,252,0)'); g.fillStyle=gr; g.fillRect(x-r,y-r,2*r,2*r); } }
+  function roll(){ paint(); c.classList.remove('gone'); c.classList.add('in'); }
+  function arm(cb){ S.fogArmed=true; wipes=0; onDone=cb; }
+  function wipe(x,y){ if(!S.fogArmed) return; g.globalCompositeOperation='destination-out';
+    const gr=g.createRadialGradient(x,y,0,x,y,95); gr.addColorStop(0,'rgba(0,0,0,.95)'); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(x-95,y-95,190,190);
+    if(++wipes>70 && onDone){ const f=onDone; onDone=null; f('user'); } }
+  function clear(){ S.fogArmed=false; c.classList.add('gone'); setTimeout(()=>c.classList.remove('in','gone'),1500); }
+  return { roll, arm, wipe, clear };
 })();
 
-/* ---------- Screen shake / flash helpers ---------- */
-function shake(){ if(RM) return; document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake'); }
-function flash(){ const f=$('#flash'); f.animate?f.animate([{opacity:.0},{opacity:.7},{opacity:0}],{duration:220}):0; }
+/* ---------- an interactive beat: resolves on the audience's action, on GO, or on a timer ---------- */
+function interact(ms){
+  let fin; const p=new Promise(res=>{ let done=false; const t=setTimeout(()=>fin('timeout'),ms);
+    fin=how=>{ if(done) return; done=true; clearTimeout(t); S.skip=null; res(how); }; });
+  S.skip=()=>fin('skip');
+  return { p, fin };
+}
 
-/* ---------- Tilt controller ---------- */
-const Tilt = (()=>{
-  let deg=0;
-  function nudge(d){ deg=clamp(deg+d, -14, 14); apply(); SFX.creak(); }
-  function apply(){ document.documentElement.style.setProperty('--tilt', (RM?deg*0.4:deg)+'deg'); }
-  function level(){ deg=0; const s=$('#stage'); s.classList.add('level-snap'); apply(); SFX.boing(); setTimeout(()=>s.classList.remove('level-snap'),700); }
-  function reset(){ deg=0; apply(); }
-  return { nudge, level, reset, get deg(){return deg;} };
-})();
-</script>
+/* pointer on stage: drives the fog wipe and the torch */
+FRAME.addEventListener('pointermove',e=>{ const p=toSet(e); if(S.fogArmed) Fog.wipe(p.x,p.y); if(S.torch) light({x:p.x,y:p.y}); });
+FRAME.addEventListener('pointerdown',e=>{ const p=toSet(e); if(S.fogArmed) Fog.wipe(p.x,p.y); if(S.torch) light({x:p.x,y:p.y}); });
 
-<script>
 /* ============================================================================
-   THE SHOW — content gags wired onto the engine
+   THE PROMPT BOOK — every cue, what's meant to happen, and what actually does
    ========================================================================== */
+const ACTS={ 0:'ACT ONE — THE LAUNCH', 7:'ACT TWO — THE DEMONSTRATION', 10:'ACT THREE — THE BIG FINISH' };
+const CUES=[
+ { id:'FLY 1', dept:'FLY', n:1, short:'House out. Main curtain up.',
+   line:['BARNABY (off)','Ladies and gentlemen — welcome to the future!'],
+   dir:'House to black. Main curtain flies out on a clean, confident count of three.',
+   pencil:()=>'stuck at a third. dropped. then flew. sandbag fell in — sandbag is in the show now.',
+   async run(){
+     document.body.classList.replace('house-up','house-out'); light(WASH);
+     say('Ladies and gentlemen — welcome to the future!',{by:'Barnaby (off)'});
+     SFX.creak(); CURTAIN.style.transition='transform 1.1s cubic-bezier(.4,0,.6,1)'; CURTAIN.style.transform='translateY(-34%)';
+     await wait(1150); CURTAIN.classList.add('judder'); cans('KEVIN · fly rail',"she's… stuck. she's stuck."); malf();
+     await wait(1300); CURTAIN.classList.remove('judder');
+     CURTAIN.style.transition='transform .32s cubic-bezier(.6,0,1,1)'; CURTAIN.style.transform='translateY(0)'; await wait(320); SFX.thud(); shake(); malf();
+     cans('SM','Kevin. KEVIN.'); await wait(800);
+     CURTAIN.style.transition='transform .5s cubic-bezier(.5,0,.2,1)'; CURTAIN.style.transform='translateY(-104%)'; SFX.whoosh(); await wait(450);
+     Phys.drop($('#sandbag'),{vx:.5,va:3,onLand:()=>{ SFX.thud(); shake(); }}); await wait(900); malf(); laugh();
+     cans('KEVIN · fly rail','…that was the counterweight.');
+     await say('…Good evening.',{hold:800});
+   } },
+ { id:'LX 2', dept:'LX', n:2, short:'Follow spot finds Barnaby.',
+   line:['BARNABY','Thank you. Please — hold your applause.'],
+   dir:'Follow spot picks up BARNABY, stage right.',
+   pencil:()=>'spot found: a wall, the sandbag, a different wall. then B.',
+   async run(){
+     light({dim:.88,r:78,soft:26,x:150,y:170}); SFX.clunk();
+     say('Thank you. Thank you. Please — hold your applause.');
+     await wait(1000); light({x:520,y:110}); await wait(900); malf();
+     const sb=Phys.center($('#sandbag')); light({x:sb.x,y:sb.y,r:62}); cans('LX · follow spot','got him!'); await wait(1200);
+     cans('SM','that is a sandbag.'); malf(); await wait(800);
+     light({x:985,y:200,r:80}); await wait(800);
+     await say("I'm over here.",{hold:300});
+     light({x:914,y:438,r:118}); laugh(); await wait(800);
+     await say('Thank you, Gary.',{hold:500});
+   } },
+ { id:'FLY 3', dept:'FLY', n:3, short:'The title flies in.',
+   line:['BARNABY','Introducing… THE FUTURE.'],
+   dir:'The title flies in, letter-perfect.',
+   pencil:()=>"arrived alphabetical. sorted itself out. E fell off — product now 'The Futur'.",
+   async run(){
+     light(WASH); HEAD.classList.remove('flown'); HEAD.classList.add('wired');
+     const L=LTRS(), cx=L.map(l=>l.offsetLeft+l.offsetWidth/2);
+     const order=L.map((_,i)=>i).sort((a,b)=>L[a].textContent.localeCompare(L[b].textContent)||a-b);
+     const total=L.reduce((s,l)=>s+l.offsetWidth,0); let cur=500-total/2; const dx=[];
+     order.forEach(src=>{ const w=L[src].offsetWidth; dx[src]=cur+w/2-cx[src]; cur+=w; });
+     L.forEach((l,i)=>{ l.style.transition='none'; l.style.transform=`translate(${dx[i]}px,-460px)`; }); void HEAD.offsetWidth;
+     say('Introducing…',{hold:200});
+     L.forEach((l,i)=>{ l.style.transition=`transform 1.1s cubic-bezier(.3,1.25,.5,1) ${i*80}ms`; l.style.transform=`translate(${dx[i]}px,0)`; });
+     SFX.whoosh(); await wait(1950); malf();
+     await say('…“EEFHRTTUU”.',{hold:400}); cans('KEVIN · fly rail','they came in a box. alphabetical.'); laugh();
+     L.forEach((l,i)=>{ l.style.transition=`transform .3s ease-out ${i*60}ms`; l.style.transform=`translate(${dx[i]*.5}px,-50px)`; });
+     await wait(300+L.length*60);
+     L.forEach((l,i)=>{ l.style.transition=`transform .45s cubic-bezier(.3,1.5,.5,1) ${i*40}ms`; l.style.transform='translate(0px,0px)'; });
+     await wait(900); SFX.ding(); HEAD.classList.remove('wired');
+     await say('THE FUTURE.',{hold:500});
+     const E=L[L.length-1]; E.style.transition='none'; E.style.transform=''; E.classList.add('wobble'); SFX.creak(); await wait(950); E.classList.remove('wobble');
+     Phys.drop(E,{vx:2.4,va:8,onLand:()=>SFX.thud()}); malf(); await wait(1000); laugh();
+     await say('…The Futur.',{hold:700});
+   } },
+ { id:'VID 4', dept:'VIDEO', n:4, short:'Product film rolls.',
+   line:['BARNABY','Roll the film!'],
+   dir:'Product film plays on the monitor.',
+   pencil:()=>"no signal → DVD logo (HIT THE CORNER) → B's holiday, Margate → product, upside down.",
+   async run(){
+     SCR.innerHTML=ART.bars; say('Roll the film!'); await wait(1300); malf();
+     SCR.innerHTML='<div class="dvd-wrap"><div class="dvd">DVD</div></div>'; cans('VIDEO','wrong input. hang on.'); await wait(1850);
+     SCR.querySelector('.dvd').classList.add('corner'); SFX.cheer(); cans('SANDRA · sound','IT HIT THE CORNER'); cans('KEVIN · fly rail','YESSSS'); laugh(); await wait(1300);
+     SCR.innerHTML=ART.margate; malf(); await say("That's— that's Margate.",{hold:250}); await say("That's my holiday.",{hold:500});
+     SCR.innerHTML=`<div class="upside">${ART.product}</div>`; malf(); cans('VIDEO','got it. ish.'); await wait(1300);
+     SCR.firstElementChild.classList.add('fixed'); SFX.pop(); await wait(600);
+     await say('There she is.',{hold:500});
+   } },
+ { id:'SND 5', dept:'SOUND', n:5, short:'Triumphant fanfare.',
+   line:['BARNABY',"Isn't she beautiful? Sandra — fanfare!"],
+   dir:'Triumphant fanfare.',
+   pencil:()=>"doorbell. B answered it. nobody there. then the trombone (Sandra: 'deliberate').",
+   async run(){
+     await say("Isn't she beautiful? Sandra — fanfare!",{hold:200});
+     Sur.sfx('[ TRIUMPHANT FANFARE ]'); await wait(800);
+     SFX.doorbell(); Sur.sfxWrong('[ DOORBELL ]'); malf(); laugh(); await wait(1500);
+     BARN.classList.add('lookback'); await say('…Should I get that?',{hold:1000}); BARN.classList.remove('lookback');
+     cans('SANDRA · sound','wrong track. ONE sec.'); await wait(900);
+     Sur.sfx('[ SAD TROMBONE ]'); SFX.trombone(); malf(); await wait(1700);
+     cans('SANDRA · sound','…that one was deliberate.'); laugh(); await wait(900);
+   } },
+ { id:'LX 6', dept:'LX', n:6, short:'A single gleam on the price.',
+   line:['BARNABY','And the price…'],
+   dir:'Price reveals: $49.99, with a single tasteful gleam.',
+   pencil:()=>'price became a slot machine. we won lemons. lemons are not legal tender. $49.99 (eventually).',
+   async run(){
+     light({dim:.72,x:705,y:372,r:170,soft:70}); say('And the price…',{hold:200});
+     const box=$('#pricebox'); box.classList.add('spinning'); SFX.ratchet();
+     STRIP.style.transition='transform 1.9s cubic-bezier(.15,.7,.2,1)'; STRIP.style.transform=`translateY(${-8*74}px)`; await wait(1950);
+     box.classList.remove('spinning'); SFX.jackpot(); FXP.spawn(700,380,{n:16,emoji:['🍋','🪙'],vy:[-11,-5]}); malf(); laugh();
+     await say('Three lemons. Did we— did we win?',{hold:400}); cans('SM','lemons are not legal tender.');
+     box.classList.add('spinning'); STRIP.style.transition='transform 1.2s cubic-bezier(.2,.8,.2,1)'; STRIP.style.transform=`translateY(${-11*74}px)`; await wait(1250);
+     box.classList.remove('spinning'); SFX.ding(); $('#pfoot').textContent='*plus tax. plus Kevin.'; $('#pfoot').classList.add('show'); light(WASH);
+     await say('$49.99. Lovely.',{hold:600});
+   } },
+ { id:'FLY 7', dept:'FLY', n:7, short:'Pre-order button flies in.',
+   line:['BARNABY','Pre-orders are open — now!'],
+   dir:'PRE-ORDER button flies in. The audience pre-orders.',
+   pencil:()=>`flew in on one wire. swung. ${S.preorders||'no'} pre-order${S.preorders===1?'':'s'}. then the wire went.`,
+   async run(){
+     CTA.classList.remove('flown'); CTA.classList.add('wired'); CTA.style.transform='translateY(-560px)'; void CTA.offsetWidth;
+     CTA.style.transition='transform 1.5s cubic-bezier(.3,1.2,.5,1)'; CTA.style.transform='translateY(0)'; SFX.whoosh();
+     say('Pre-orders are open — now!'); await wait(1600);
+     CTA.style.transition='none'; CTA.style.transform=''; CTA.classList.add('onewire','swing'); SFX.creak(); malf();
+     cans('KEVIN · fly rail','lost a wire. LOST A WIRE.');
+     CTA.tabIndex=0; await say("It's fine! It's live! Go on — press it!",{hold:0});
+     hint('Press PRE-ORDER on stage — it still works. Probably.');
+     const it=interact(9000); S.ctaDone=it.fin; await it.p; S.ctaDone=null; hint(null); CTA.tabIndex=-1;
+     if(!S.preorders){ await say('No? Nobody? …Kevin, press it.',{hold:200}); cans('KEVIN · fly rail','pressing it.'); }
+     SFX.ping(); CTA.classList.remove('onewire'); CTA.classList.remove('wired'); await wait(250);
+     Phys.drop(CTA,{vx:-1.6,va:-6,onLand:()=>SFX.thud()}); CTA.classList.remove('swing'); malf(); await wait(900); laugh();
+     await say(S.preorders? `${S.preorders} pre-order${S.preorders>1?'s':''}! A record!` : '…Pre-orders are closed.',{hold:700});
+   } },
+ { id:'REV 8', dept:'REVOLVE', n:8, short:'Revolve: every angle.',
+   line:['BARNABY',"Let's see it from every angle."],
+   dir:'The revolve turns, showing the product from every angle.',
+   pencil:()=>"showed the back of the set. Kevin's sandwich, on view. stopped 2° off.",
+   async run(){
+     light(WASH); await say("Let's see it from every angle.",{hold:200});
+     TURN.style.transition='transform 1.9s cubic-bezier(.6,0,.3,1)'; TURN.style.transform='rotateY(180deg) rotate(0deg)'; SFX.rumble(); await wait(2000);
+     malf(); laugh(); cans('KEVIN · fly rail','is that my sandwich?');
+     await say("That's— that's the back. That's the back of the future.",{hold:400});
+     cans('SM','revolve, keep going. KEEP GOING.');
+     TURN.style.transition='transform 1.7s cubic-bezier(.5,0,.3,1.15)'; TURN.style.transform='rotateY(360deg) rotate(-1.8deg)'; SFX.rumble(); await wait(1800);
+     TURN.style.transition='none'; TURN.style.transform='rotateY(0deg) rotate(-1.8deg)'; malf();
+     await say('Every angle. Mostly this one.',{hold:600});
+   } },
+ { id:'FX 9', dept:'FX', n:9, short:'A gentle haze.',
+   line:['BARNABY',"Feel that? That's innovation."],
+   dir:'A gentle haze, for atmosphere.',
+   pencil:()=>`not gentle. ${S.fogByUser?'audience wafted it':'Kevin wafted it'}. Kevin also "tidied" the menu in the fog.`,
+   async run(){
+     say("Feel that? That's—",{hold:0}); Fog.roll(); SFX.hiss(); await wait(1300); malf();
+     await say('*cough* …innovation. *cough*',{hold:200});
+     cans('KEVIN · fly rail','is it meant to be this thick?'); cans('SANDRA · sound','WAFT IT.');
+     const links=$('#nav .links'), order=['Press','Product','Pre-order','Story','Pricing'];
+     order.forEach(t=>links.appendChild(LINKS().find(l=>l.textContent===t)));
+     Phys.drop(LINKS().find(l=>l.textContent==='Pricing'),{vx:1});
+     hint('Waft the haze — sweep across the stage');
+     const it=interact(9500); Fog.arm(it.fin); const how=await it.p; S.fogByUser=how==='user';
+     hint(null); Fog.clear(); await wait(1300); malf(); laugh();
+     cans('KEVIN · fly rail',"tidied the menu while it was foggy. you're welcome.");
+     await say('Has… has someone rearranged the menu?',{hold:600});
+   } },
+ { id:'LX 10', dept:'LX', n:10, short:'Warm wash for the emotional bit.',
+   line:['BARNABY','When I was a boy, I dreamt of…'],
+   dir:'Warm wash for the emotional bit.',
+   pencil:()=>`tripped the mains. ${S.mainsByUser?'found by an audience member':'found by Kevin'}, by torch. disco mode (?!)`,
+   async run(){
+     light({dim:.3,x:914,y:430,r:240,soft:220}); await say('When I was a boy, I dreamt of—',{hold:100});
+     SFX.thunk(); light({dim:.985,r:0,soft:0,snap:true}); document.body.classList.add('blackout'); malf();
+     await wait(700); say('…of a slightly brighter future.',{hold:200});
+     cans('SM',"we've tripped the mains."); cans('KEVIN · fly rail',"who's got the torch? WHO'S GOT THE TORCH");
+     await wait(800);
+     LX.classList.add('torch'); light({x:500,y:300,r:62,soft:46}); S.torch=true;
+     hint("You've got the torch. Find the MAINS switch.");
+     const it=interact(11000); S.mainsDone=it.fin; const how=await it.p; S.mainsDone=null; S.mainsByUser=how==='user';
+     S.torch=false; LX.classList.remove('torch'); hint(null);
+     if(!S.mainsByUser){ cans('KEVIN · fly rail','found it—'); light({x:946,y:522}); await wait(1000); }
+     BREAKER.classList.add('on'); SFX.clunk(); await wait(250);
+     document.body.classList.remove('blackout'); light({...WASH,snap:true}); LX.classList.add('disco'); SFX.disco(); malf(); laugh();
+     await wait(1900); LX.classList.remove('disco');
+     await say(S.mainsByUser? "Thank you — you, with the torch. You're hired." : 'Thank you, Kevin.',{hold:600});
+   } },
+ { id:'PYRO 11', dept:'PYRO', n:11, short:"Confetti on 'with great pride'.",
+   line:['BARNABY','And so — with great pride —'],
+   dir:"Confetti cannons fire on 'with great pride'.",
+   pencil:()=>"fired on 'great'. sideways. took out a lantern.",
+   async run(){
+     light(WASH); say('And so — with great —',{hold:0}); await wait(1000);
+     $('#cannon').classList.add('fire'); SFX.boom(); malf();
+     FXP.spawn(70,500,{n:80,vx:[11,19],vy:[-15,-10],g:.18,life:200});
+     await wait(520); $('#lantern').classList.add('hit'); SFX.clang(); FXP.spawn(778,60,{n:24,vx:[-5,5],vy:[-4,2]});
+     await wait(650); light({dim:.55,snap:true}); await wait(120); light({...WASH,snap:true});
+     $('#lantern').classList.remove('hit'); Phys.drop($('#lantern'),{vx:-1.2,va:-9,onLand:()=>{ SFX.thud(); shake(); dust(); }}); malf();
+     await wait(1100); laugh(); $('#cannon').classList.remove('fire');
+     cans('PYRO',"that was on 'great'. you said 'great'."); cans('SM',"it was MEANT to be on 'pride'.");
+     await say('…pride.',{hold:900});
+   } },
+ { id:'SET 12', dept:'SET', n:12, short:"Barnaby's closing bow. Set holds.",
+   line:['BARNABY','Thank you — this team — this set, which is holding up beautifully —'],
+   dir:"BARNABY's closing words. The set holds.",
+   pencil:()=>'set did not hold.',
+   async run(){
+     await say('Thank you. Truly. This team — this product — this set, which is holding up beautifully —',{hold:100});
+     SFX.creak(); TURN.style.transition='transform .9s cubic-bezier(.5,1.8,.4,1)'; TURN.style.transform='rotateY(0deg) rotate(-4deg)'; shake(); await wait(900);
+     const parts=[$('#logo'),...LINKS(),$('#eyebrow span'),...LTRS(),$('#sub span'),$('#screen'),$('#pricebox'),$('#cannon')].filter(p=>!p._body);
+     parts.forEach((p,k)=>setTimeout(()=>{ Phys.drop(p,{vx:rand(-2.6,2.6),va:rand(-10,10)}); if(k%3===0) malf(); }, k*85+rand(0,50)));
+     $$('.entry')[S.i].classList.add('torn');
+     await wait(parts.length*85+1200); SFX.thud(); shake(); dust(); laugh();
+     cans('KEVIN · fly rail','…should I bring the curtain in?'); cans('SM','DSM — your call.');
+     await say('…holding up.',{hold:900});
+   } },
+ { id:'FLY 13', dept:'FLY', n:13, short:'Final curtain.',
+   line:['BARNABY','Ladies and gentlemen: the future.'],
+   dir:'Final curtain.',
+   pencil:()=>'perfect. first time all year.',
+   async run(){
+     CURTAIN.style.transition='transform 1.3s cubic-bezier(.5,0,.25,1)'; CURTAIN.style.transform='translateY(0)'; SFX.whoosh();
+     await wait(1300); SFX.thud();
+     cans('KEVIN · fly rail','…did that just work?'); cans('SM',"nobody touch ANYTHING.");
+     await say('Ladies and gentlemen…',{hold:800});
+     CURTAIN.style.transition='transform 1.6s cubic-bezier(.5,0,.2,1)'; CURTAIN.style.transform='translateY(-104%)';
+     light(WASH); LX.classList.add('golden');
+     TURN.style.transition='transform 1.2s cubic-bezier(.3,1.4,.5,1)'; TURN.style.transform='rotateY(0deg) rotate(0deg)';
+     SCR.innerHTML=ART.product; await wait(800);
+     // everything that went wrong goes right, in order
+     const E=LTRS().at(-1);
+     const order=[$('#sandbag'),$('#lantern'),$('#cannon'),$('#screen'),$('#pricebox'),CTA,$('#logo'),...LINKS(),$('#eyebrow span'),$('#sub span'),...LTRS().slice(0,-1)];
+     order.forEach((el,k)=>Phys.restore(el,k*110));
+     await wait(order.length*110+700);
+     Sur.sfx('[ TRIUMPHANT FANFARE ]'); SFX.fanfare(); await wait(500);
+     Sur.sfxWrong('[ …the right one ]'); Phys.restore(E,0); await wait(700); SFX.ding();
+     await say('…THE FUTURE.',{hold:300});
+     BARN.classList.add('bow'); SFX.applause(); laugh(); setTimeout(laugh,900); setTimeout(laugh,1800);
+     for(let k=0;k<10;k++) setTimeout(()=>FXP.spawn(rand(80,920),-10,{n:18,vx:[-2,2],vy:[0,3],g:.12,life:260}), k*220);
+     await wait(1400); BARN.classList.remove('bow');
+     await say('Thirteen cues. Thirteen disasters. Every single one of them…',{hold:400});
+     await say('…exactly as rehearsed.',{hold:400});
+   } },
+];
 
-/* ---------- 0. COLD OPEN ---------- */
-const ColdOpen = (()=>{
-  const panic=[
-    {t:"…is it— are we LIVE? Are we live?",m:'panic'},
-    {t:"We're LIVE. Oh. Oh no.",m:'panic'},
-    {t:"Right. Smile. SMILE.",m:'worried'},
-    {t:"Kevin, the CURTAIN. Pull the— PULL THE CURTAIN.",m:'panic'}
-  ];
-  let done=false, i=0;
-  function tick(){ if(done) return; if(i<panic.length){ Barnaby.say(panic[i].t,{mood:panic[i].m, force:i===0}); i++; setTimeout(tick, 900); } }
-  function reveal(){
-    if(done) return; done=true;
-    Barnaby.whip();
-    const L=$('#curtainL'), R=$('#curtainR');
-    L.classList.add('closing'); R.classList.add('closing');
-    SFX.creak();
-    setTimeout(()=>{
-      document.body.classList.remove('rehearsal');
-      $('#headline').innerHTML='';
-      // open curtains again to reveal the "polished" page (scheduled first so a gag error can't strand them)
-      setTimeout(()=>{ L.classList.remove('closing'); R.classList.remove('closing'); Barnaby.say("Ladies and gentlemen — welcome to the future.",{mood:'calm', force:true}); }, 650);
-      try{ Show.start(); }catch(err){ console.warn('show start:', err); }
-    }, 1150);
+const Book=(()=>{
+  const page=$('#page');
+  page.innerHTML=`<div class="head">THE WEBSITE THAT GOES WRONG · PROMPT COPY · PROPERTY OF STAGE MANAGEMENT</div>
+    <div class="note0">DSM — the show runs on your call. When the lamp says STANDBY, hit GO (or space). Whatever happens: keep calling. — SM</div>`
+    + CUES.map((c,i)=>`${ACTS[i]?`<div class="act">${ACTS[i]}</div>`:''}
+    <div class="entry" id="e${i}"><div class="qt">${c.dept}<b>${c.n}</b></div><div>
+      <p class="line"><b>${c.line[0]}</b>${c.line[1]}</p><p class="dir">${c.dir}</p><p class="pencil">${c.pencil()}</p></div></div>`).join('');
+  const book=$('#book');
+  function focus(i){ const e=$('#e'+i); book.scrollTo({ top:i===0?0:e.offsetTop-book.clientHeight*.32, behavior:RM?'auto':'smooth' }); }
+  function state(i,cls){ $$('.entry').forEach(e=>e.classList.remove('standby','running')); const e=$('#e'+i); if(e){ e.classList.add(cls); focus(i); } }
+  function write(i,text){ const e=$('#e'+i); e.querySelector('.dir').classList.add('struck'); const p=e.querySelector('.pencil'); p.textContent=text; p.classList.add('written'); }
+  async function tickAll(){
+    $$('.entry').forEach(e=>e.classList.remove('standby','running'));
+    for(let i=0;i<CUES.length;i++){ focus(i); await wait(RM?60:240); const p=$('#e'+i+' .pencil'); p.insertAdjacentHTML('beforeend',`<span class="tick">✓ as rehearsed</span>`); SFX.tap(); }
   }
-  function begin(){
-    tick();
-    setTimeout(reveal, 3600);
-    // skip on click/key
-    const skip=(e)=>{ if(!done){ reveal(); } window.removeEventListener('click',skip); window.removeEventListener('keydown',skip); };
-    setTimeout(()=>{ window.addEventListener('click',skip); window.addEventListener('keydown',skip); }, 500);
-    // fill rehearsal placeholders
-    $('#subhead').innerHTML='<span class="placeholder" style="display:inline-block">[ subhead copy — ask marketing — do NOT ship lorem ipsum]</span>';
-  }
-  return { begin };
-})();
-
-/* ---------- Master show controller ---------- */
-const Show = (()=>{
-  let started=false;
-  function start(){
-    if(started) return; started=true;
-    $('#subhead').textContent="The single most important product ever unveiled on this — or, frankly, any — stage. Precision-engineered. Impeccably rehearsed. Absolutely ready.";
-    Headline.play();
-    HeroImage.play();
-    Countdown.start();
-    PriceTag.start();
-    Ambient.start();
-    Slider.start();
-    Coward.arm();
-  }
-  return { start };
-})();
-
-/* ---------- 1. HEADLINE WITH STAGE FRIGHT ---------- */
-const Headline = (()=>{
-  const el=$('#headline'); const foot=$('#headfoot');
-  // op timeline: type with mistakes, backspace, footnote, land it
-  const runs=[
-    [ ['type','GRABD OP'],['pause',400],['back',4],['type','AND OP'],['foot','*hold on'],['pause',500],['type','ENING'] ],
-    [ ['type','GRAND OEPN'],['pause',350],['back',3],['type','PENING'] ],
-    [ ['type','GRAND [redact'],['pause',450],['back',9],['type','OPENING'] ]
-  ];
-  function render(txt){
-    el.innerHTML='';
-    txt.split(' ').forEach((word,wi)=>{
-      if(wi>0) el.appendChild(document.createTextNode(' '));
-      const w=document.createElement('span'); w.className='word';
-      [...word].forEach(ch=>{ const s=document.createElement('span'); s.className='ltr'; s.textContent=ch; w.appendChild(s); });
-      el.appendChild(w);
-    });
-    const c=document.createElement('span'); c.className='caret'; el.appendChild(c);
-  }
-  async function runOnce(){
-    const ops = pick(runs); let cur='';
-    foot.style.opacity=0;
-    for(const [op,arg] of ops){
-      if(op==='type'){ for(const ch of arg){ cur+=ch; render(cur); await wait(RM?0:70); } }
-      else if(op==='back'){ for(let k=0;k<arg;k++){ cur=cur.slice(0,-1); render(cur); await wait(RM?0:55); } }
-      else if(op==='pause'){ await wait(RM?100:arg); }
-      else if(op==='foot'){ foot.textContent=arg; foot.style.opacity=1; }
-    }
-    // land it
-    cur='GRAND OPENING'; render(cur); foot.textContent='*there we go'; foot.style.opacity=1;
-    // remove caret after settle
-    setTimeout(()=>{ const c=el.querySelector('.caret'); if(c) c.remove(); foot.style.opacity=0; }, 1400);
-  }
-  function play(){ runOnce(); }
-  function drop(){ // gravity: letters fall
-    const ltrs=$$('#headline .ltr');
-    ltrs.forEach((s,idx)=> setTimeout(()=>{ Physics.dropNode(s,{vx:rand(-3,3)}); }, idx*70));
-    Meter.bump();
-  }
-  return { play, drop, render };
-})();
-
-/* ---------- Hero image betrayal ---------- */
-const HeroImage = (()=>{
-  const box=$('#herovisual');
-  const potato=`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#6b5137"/><ellipse cx="100" cy="80" rx="55" ry="40" fill="#b58a52"/><circle cx="85" cy="70" r="4" fill="#5a4023"/><circle cx="115" cy="85" r="3" fill="#5a4023"/><text x="100" y="135" text-anchor="middle" fill="#e9dcc0" font-family="Courier New" font-size="11">fig 1. not the product</text></svg>`;
-  const cat=`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#22303a"/><text x="100" y="86" text-anchor="middle" font-size="60">🐈</text><text x="100" y="130" text-anchor="middle" fill="#cfe" font-family="Courier New" font-size="11">Barnaby's cat, Understudy</text></svg>`;
-  const crayon=`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#fdf6e3"/><rect x="70" y="55" width="60" height="45" fill="none" stroke="#3b6" stroke-width="4"/><path d="M70 55 L100 30 L130 55" fill="none" stroke="#e33" stroke-width="4"/><circle cx="150" cy="35" r="12" fill="#fc0"/><text x="100" y="128" text-anchor="middle" fill="#a94" font-family="Comic Sans MS" font-size="12">THE FUTURE (by kevin, age 7)</text></svg>`;
-  const real=`<svg viewBox="0 0 200 150"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f6bff"/><stop offset="1" stop-color="#7b3cff"/></linearGradient></defs><rect width="200" height="150" fill="#0d0a12"/><rect x="55" y="35" width="90" height="80" rx="14" fill="url(#g)"/><circle cx="100" cy="75" r="20" fill="rgba(255,255,255,.9)"/><rect x="70" y="120" width="60" height="6" rx="3" fill="#c9a24b"/></svg>`;
-  async function play(){
-    await wait(1400);
-    box.innerHTML=`<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#889;font-family:var(--mono);font-size:12px">⚠ image failed to load</div>`;
-    await wait(700); box.innerHTML=potato+'<div class="cap">reconnecting…</div>'; Barnaby.say("That's — that's a potato. Kevin, that's a POTATO.",{mood:'worried', ambient:true});
-    await wait(1100); box.innerHTML=cat+'<div class="cap">reconnecting…</div>';
-    await wait(1100); box.innerHTML=crayon+'<div class="cap">final asset (allegedly)</div>';
-    await wait(1400); box.innerHTML=real+'<div class="cap">THE FUTURE™ — actual size may vary</div>';
-  }
-  return { play };
-})();
-
-/* ---------- 2. COUNTDOWN THAT COUNTS UP ---------- */
-const Countdown = (()=>{
-  const clock=$('#clock'), lbl=$('#clocklbl'); let secs=600, dir=-1, mult=1, iv=null;
-  const labels=[[Infinity,"Don't miss out"],[560,"Hurry, limited seats"],[540,"SALE ENDS IN"],[0,"SALE STARTED… AGO"],[-40,"TIME ELAPSED SINCE SALE"],[-120,"we are so sorry"]];
-  function fmt(s){ const a=Math.abs(s); if(Math.random()<0.02) return "3 fortnights";
-    const m=String((a/60|0)).padStart(2,'0'), ss=String(a%60).padStart(2,'0'); return `${s<0?'+':''}00:${m}:${ss}`; }
-  function relabel(){
-    let best="Don't miss out"; for(const [th,tx] of labels){ if(secs<=th) best=tx; } lbl.textContent=best; }
-  function tick(){ secs += dir*mult; clock.textContent=fmt(secs);
-    if(secs<=594 && dir===-1 && Math.random()<0.06){ dir=1; Barnaby.say("The clock's going the wrong way. That's — that's fine. Time is a construct.",{mood:'worried', ambient:true}); }
-    if(secs<0) clock.style.color='var(--hazard)';
-    relabel(); }
-  function start(){ if(iv) return; iv=setInterval(tick, 1000); }
-  $('#fixtimer').addEventListener('click',()=>{ mult*=3; dir=1; SFX.klaxon(); Chaos.escalate();
-    Barnaby.say("I've fixed it. …It's worse. Why is fixing it worse.",{mood:'panic'}); Meter.bump(); $('#fixtimer').textContent='Fix it harder'; });
-  function reset(){ clearInterval(iv); iv=null; secs=600; dir=-1; mult=1; clock.style.color=''; clock.textContent='00:10:00'; }
-  return { start, reset };
-})();
-
-/* ---------- 3. PRICE TAG STAGE FRIGHT ---------- */
-const PriceTag = (()=>{
-  const el=$('#price'), foot=$('#pricefoot'); let cents=4999, near=false;
-  const cycle=['$4,900,000','FREE?!','-$12','PRICE UNDER CONSTRUCTION','$49.99','¥∞','$49.99'];
-  function start(){
-    el.classList.add('flick');
-    let i=0; const iv=setInterval(()=>{ el.textContent=cycle[i%cycle.length]; i++;
-      if(i>cycle.length){ clearInterval(iv); el.classList.remove('flick'); settle(); } }, 260);
-  }
-  function settle(){ el.textContent="We'll figure it out at checkout";
-    setTimeout(()=>{ foot.textContent='*price may go up while you look at it'; }, 900); }
-  // proximity: cursor lingers near price → cents tick up
-  $('#pricecard').addEventListener('mouseenter',()=>near=true);
-  $('#pricecard').addEventListener('mouseleave',()=>near=false);
-  setInterval(()=>{ if(near){ cents+=1; if(foot.textContent) foot.textContent=`*now $${(cents/100).toFixed(2)} — you looked too long`; } }, 700);
-  function reset(){ el.textContent='$49.99'; foot.textContent=''; cents=4999; }
-  return { start, reset };
-})();
-
-/* ---------- 4. AMBIENT BLAME (it's not your fault. it's your fault.) ---------- */
-const Ambient = (()=>{
-  let lastMove=0, moveSamples=[], idleT=null, deadClicks=0, lastDead=0;
-  function resetIdle(){ clearTimeout(idleT); idleT=setTimeout(()=>{
-    Barnaby.say(pick(["We can all see you're not reading. It's fine. It's fine.","Take your time. The show certainly is.","Still here? Bold."]),{mood:'done', ambient:true}); }, 22000); }
-  function start(){
-    resetIdle();
-    let lastX=0,lastY=0,lt=0;
-    window.addEventListener('mousemove',e=>{ resetIdle();
-      const now=performance.now(), dt=now-lt; if(dt>0){ const v=Math.hypot(e.clientX-lastX,e.clientY-lastY)/dt;
-        if(v>4 && now-lastMove>6000){ lastMove=now; Barnaby.say("Sir — if you could stop WIGGLING the cursor. Thank you.",{mood:'worried', ambient:true}); } }
-      lastX=e.clientX; lastY=e.clientY; lt=now; });
-    let ls=0, lst=0;
-    window.addEventListener('scroll',()=>{ resetIdle(); const now=performance.now(); const v=Math.abs(scrollY-ls)/Math.max(1,now-lst);
-      if(v>2 && now-lastMove>6000){ lastMove=now; Barnaby.say("We are NOT ready for that section. Back up, please.",{mood:'worried', ambient:true}); }
-      ls=scrollY; lst=now; Chaos.escalate(0.4); },{passive:true});
-    let rz=0, lastW=innerWidth; window.addEventListener('resize',()=>{ if(innerWidth===lastW) return; lastW=innerWidth; // ignore phone URL-bar height jitter
-      const now=Date.now(); if(now-rz>4000){ rz=now;
-      Barnaby.say("Oh, brilliant. Now you're resizing us. Mid-show.",{mood:'done', ambient:true}); } });
-  }
-  // rage click on disabled/dead things
-  function deadClick(){ const now=Date.now(); if(now-lastDead<1200) deadClicks++; else deadClicks=1; lastDead=now;
-    if(deadClicks>=3){ Barnaby.say("Clicking it HARDER will not summon the button.",{mood:'done', ambient:true}); deadClicks=0; } }
-  return { start, deadClick };
-})();
-
-/* ---------- 5. THE COWARD'S LAUNCH BUTTON ---------- */
-const Coward = (()=>{
-  const btn=$('#launch'); let dodges=0, armed=false, caught=false, ghost=null;
-  function place(){ const w=btn.offsetWidth,h=btn.offsetHeight;
-    const x=clamp(rand(40,innerWidth-w-40),40,innerWidth-w-40);
-    const y=clamp(rand(120,innerHeight-h-160),120,innerHeight-h-160);
-    btn.style.left=x+'px'; btn.style.top=y+'px'; }
-  function flee(e){ if(!armed||caught) return;
-    const r=btn.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2;
-    const d=Math.hypot(e.clientX-cx, e.clientY-cy);
-    const threat=90+dodges*4;
-    if(d<threat){
-      if(!btn.classList.contains('fleeing')){
-        if(!ghost){ ghost=document.createElement('div'); ghost.className='btn ghost-note'; ghost.textContent='(the button was right here)'; btn.after(ghost); }
-        btn.classList.add('fleeing','cowering');
-      }
-      dodges++;
-      place(); SFX.pop();
-      if(dodges===1) Barnaby.say("It's — it's just shy. Give it a moment.",{mood:'worried'});
-      else if(dodges===3) Barnaby.say("Kevin oiled the wrong hinge. This is a Kevin problem.",{mood:'worried'});
-      else if(dodges===5){ Barnaby.say("Right. FINE. Come here. Come HERE.",{mood:'done'});
-        armed=false; setTimeout(()=>catchable(e.clientX,e.clientY),200); }
-    }
-  }
-  function catchable(x,y){ // waddle toward cursor so it can be clicked
-    const w=btn.offsetWidth,h=btn.offsetHeight;
-    btn.style.transition='left .9s ease, top .9s ease';
-    btn.style.left=clamp(x-w/2,10,innerWidth-w-10)+'px'; btn.style.top=clamp(y-h/2,10,innerHeight-h-100)+'px';
-    btn.textContent='catch me →'; setTimeout(()=>{ btn.textContent='LAUNCH THE FUTURE'; },900);
-  }
-  function arm(){ armed=true; window.addEventListener('mousemove',flee); }
-  btn.addEventListener('click',()=>{ if(btn.classList.contains('fleeing')&&armed) return; caught=true; Meltdown.begin(); });
-  function reset(){ dodges=0; caught=false; armed=false; btn.classList.remove('fleeing','cowering'); btn.style=''; if(ghost){ghost.remove();ghost=null;} }
-  return { arm, reset };
-})();
-
-/* ---------- 6. CONSENT HYDRA ---------- */
-const Hydra = (()=>{
-  const box=$('#consent'), tally=$('#tally'), mercy=$('#mercy'); let count=0, extra=0, locked=false;
-  const clauses=[
-    "…and the Terms of the aforementioned Terms.",
-    "…that a goose may represent me in binding arbitration.",
-    "…to receive interpretive dance from the Legal department.",
-    "…that I have read the Terms (we both know I haven't).",
-    "…to be gently upsold at intermission.",
-    "…that Kevin gets a cut. Kevin needs this.",
-    "…to the Terms' emotional support subterms."
-  ];
-  function refresh(){ const boxes=$$('#consent input:checked').length; tally.textContent=`Agreements accepted: ${boxes} / ${extra+1}`;
-    if(extra>=5 && mercy.style.display!=='block'){ mercy.style.display='block'; } }
-  box.addEventListener('change',e=>{ if(locked) return; if(!e.target.matches('input')) return;
-    if(e.target.checked){
-      // spawn 1-2 new clauses
-      const add=1+(Math.random()<.5?1:0);
-      for(let k=0;k<add && extra<clauses.length;k++){ extra++;
-        const row=document.createElement('div'); row.className='row';
-        row.innerHTML=`<input type="checkbox" id="agree${extra}"><label for="agree${extra}">${clauses[extra-1]}</label>`;
-        box.appendChild(row); }
-      // conflictingly uncheck a random sibling
-      const others=$$('#consent input:checked').filter(x=>x!==e.target);
-      if(others.length && Math.random()<.7){ const v=pick(others); v.checked=false; v.closest('.row').classList.add('flash');
-        setTimeout(()=>v.closest('.row').classList.remove('flash'),500);
-        Barnaby.say("Conflicting clause. Ticking that un-ticks that. It's — it's watertight, legally.",{mood:'worried', ambient:true}); }
-      Chaos.escalate(0.5); Meter.bump();
-    }
-    refresh();
-  });
-  mercy.addEventListener('click',()=>{ locked=true; $$('#consent input').forEach(i=>{i.checked=true; i.disabled=true;});
-    tally.textContent='Agreements accepted: all of them. every one. legally binding.'; mercy.textContent='✓ agreed to everything, God help you';
-    mercy.disabled=true; SFX.ding(); Barnaby.say("Signed. Sealed. We own your goose now.",{mood:'proud'}); });
-  function reset(){ locked=false; extra=0; box.innerHTML='<div class="row"><input type="checkbox" id="agree0"><label for="agree0">I agree to the Terms of Service.</label></div>';
-    mercy.style.display='none'; mercy.disabled=false; mercy.textContent='I agree to literally anything, please'; tally.textContent='Agreements accepted: 0'; }
-  return { reset };
-})();
-
-/* ---------- 7. VALIDATION THAT HATES CORRECT ANSWERS ---------- */
-const Validation = (()=>{
-  const input=$('#email'), bubble=$('#emailbubble'), verdict=$('#emailverdict');
-  const insults=["That looks fake.","I've seen a thousand emails. None had an @ THERE.","Too real. Suspiciously real.","No. The vibes are off.","That's a Tuesday email. We need a Friday email."];
-  const praise=["Perfect. Chef's kiss.","NOW we're talking.","Impeccable. Ship it.","Yes. Beautiful. Unhinged."];
-  const valid=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  let unlocked=false;
-  function judge(){ const v=input.value.trim(); if(!v){ clear(); return; }
-    if(valid(v)){ input.classList.add('bad'); input.classList.remove('good');
-      verdict.textContent=pick(insults); verdict.className='verdict no';
-      bubble.textContent=pick(insults); bubble.classList.add('show');
-      setTimeout(()=>bubble.classList.remove('show'),1600);
-      setTimeout(()=>input.classList.remove('bad'),400);
-    } else { input.classList.add('good'); input.classList.remove('bad');
-      verdict.textContent=pick(praise)+' (accepted)'; verdict.className='verdict ok'; unlocked=true; }
-  }
-  function clear(){ verdict.textContent=''; input.classList.remove('bad','good'); }
-  input.addEventListener('input', ()=>{ clearTimeout(input._t); input._t=setTimeout(judge, 350); });
-  input.addEventListener('blur', judge);
-  function reset(){ input.value=''; clear(); unlocked=false; }
-  return { reset, get unlocked(){return unlocked;} };
-})();
-
-/* ---------- 8. SLIDER TUG-OF-WAR ---------- */
-const Slider = (()=>{
-  const s=$('#excite'), val=$('#sval'), vu=$('#vu'), decoy=$('#decoy');
-  let target=50, down=false, popped=false, raf=null, lastVal=50, vt=0;
-  function render(v){ s.value=v; val.textContent=Math.round(v)+'%'; vu.style.width=v+'%'; }
-  function loop(){ if(!down && !popped){ // spring back toward baseline 30
-      const cur=+s.value; const next=cur+(30-cur)*0.04; if(Math.abs(next-cur)>0.2){ render(next); } }
-    raf=requestAnimationFrame(loop); }
-  s.addEventListener('pointerdown',()=>{ down=true; vt=performance.now(); lastVal=+s.value; });
-  window.addEventListener('pointerup',()=>{ down=false; });
-  s.addEventListener('input',()=>{ const now=performance.now(); const dv=Math.abs(+s.value-lastVal); const dt=now-vt;
-    if(dt>0 && dv/dt>0.8 && !popped){ popThumb(); return; }
-    lastVal=+s.value; vt=now; render(+s.value);
-    if(+s.value>=98){ blast(); } });
-  function blast(){ if(popped) return; SFX.klaxon(); vu.style.width='100%'; vu.style.filter='saturate(2)';
-    Barnaby.say("Whoa— that's TOO much excitement. Shh. Shh. Bring it down.",{mood:'panic'});
-    setTimeout(()=>vu.style.filter='',600); Meter.bump(); }
-  function popThumb(){ popped=true; SFX.boing(); s.style.opacity='.25';
-    decoy.style.display='block'; let x=s.getBoundingClientRect().right-13, y=innerHeight-40;
-    decoy.style.left=x+'px'; decoy.style.top=y+'px';
-    Barnaby.say("The thumb's come off. It does that. Click it, it'll go back. Probably.",{mood:'worried'});
-    // roll along bottom
-    let vx=rand(3,6); (function roll(){ if(!popped) return; x-=vx; if(x<10){x=10;vx*=-1;} if(x>innerWidth-26){x=innerWidth-26;vx*=-1;}
-      decoy.style.left=x+'px'; requestAnimationFrame(roll); })();
-  }
-  decoy.addEventListener('click',()=>{ popped=false; decoy.style.display='none'; s.style.opacity='1'; render(30); SFX.pop(); });
-  function start(){ if(!raf) loop(); render(50); }
-  function reset(){ popped=false; down=false; decoy.style.display='none'; s.style.opacity='1'; render(50); }
-  return { start, reset };
-})();
-
-/* ---------- Nav links shed (gravity betrayal escalation) ---------- */
-function shedNav(n=1){ const links=$$('#nav a[data-nav]').filter(a=>a.style.visibility!=='hidden');
-  for(let i=0;i<n && links.length;i++){ const a=links.splice((Math.random()*links.length)|0,1)[0]; Physics.popOff(a); } }
-
-/* wire dead-click detector + generic click escalation */
-document.addEventListener('click',e=>{
-  SFX.unlock();
-  if(e.target.closest('#nav a')){ e.preventDefault(); }
-  if(e.target.matches('button:disabled, [disabled]')) Ambient.deadClick();
-  Chaos.escalate(0.5);
-});
-document.addEventListener('keydown',()=>SFX.unlock(),{once:true});
-
-/* Barnaby's headset: the only way sound ever turns on (off by default, out of respect) */
-$('#mutebtn').addEventListener('click',e=>{
-  const on=SFX.toggle(), b=e.currentTarget;
-  $('#spk-on').style.display=on?'':'none'; $('#spk-off').style.display=on?'none':'';
-  b.setAttribute('aria-pressed', String(on)); b.title=on?"Sound on — Barnaby's headset is live":"Sound off — click for Barnaby's headset";
-  Barnaby.say(on?"Headset's live. You'll hear every creak. Lucky you.":"Muted. Probably for the best.",{mood:on?'worried':'done'});
-});
-
-/* ---------- submit reserves nothing, escalates ---------- */
-$('#submit').addEventListener('click',()=>{
-  if(Validation.unlocked){ Barnaby.say("Seat reserved! It's a lovely seat. It's on fire, but it's lovely.",{mood:'proud'}); Confetti.pfft(innerWidth/2, innerHeight/2); }
-  else { Barnaby.say("Enter a WRONG email first. That's how this works now. Don't fight it.",{mood:'done', ambient:true}); }
-  Chaos.escalate();
-});
-</script>
-
-<script>
-/* ============================================================================
-   ESCALATION MILESTONES + THE MELTDOWN SEQUENCE
-   ========================================================================== */
-
-/* progressive tilt + standby + shedding as the user interacts */
-Chaos.on(3, ()=>{ Tilt.nudge(-1.5); StandBy.show(); });
-Chaos.on(6, ()=>{ Tilt.nudge(-2.5); Barnaby.say("The set is FINE. The set is perfectly— it's fine.",{mood:'worried'}); });
-Chaos.on(9, ()=>{ Tilt.nudge(-3); shedNav(1); StandBy.show(); });
-Chaos.on(13, ()=>{ Tilt.nudge(2); Barnaby.say("Everything is under contro—",{mood:'worried'}); });
-Chaos.on(16, ()=>{ shedNav(1); addRelevel(); });
-
-function addRelevel(){ if($('#relevelbtn')) return;
-  const b=document.createElement('button'); b.id='relevelbtn'; b.className='btn secondary'; b.textContent='RE-LEVEL THE STAGE';
-  b.style.cssText='position:fixed; left:16px; bottom:calc(var(--booth-h) + 16px); z-index:58';
-  b.onclick=()=>{ Tilt.level(); Barnaby.say("There. Level. …Ish.",{mood:'proud'}); };
-  document.body.appendChild(b);
-}
-
-/* ---------- Modal helper (confirmation spiral + error-in-error) ---------- */
-const Modals = (()=>{
-  const wrap=$('#modals');
-  function open(){ wrap.classList.add('show'); document.body.classList.add('no-scroll'); }
-  function closeAll(){ wrap.innerHTML=''; wrap.classList.remove('show'); document.body.classList.remove('no-scroll'); }
-  function make(html, offset=0){ const m=document.createElement('div'); m.className='modal'; m.innerHTML=html;
-    m.style.marginLeft=offset+'px'; m.style.marginTop=offset+'px'; wrap.appendChild(m); return m; }
-  return { open, closeAll, make, wrap };
-})();
-
-/* confirmation spiral → resolves into the update sequence */
-function confirmationSpiral(done){
-  Modals.open();
-  const steps=[
-    {q:"Are you sure you want to launch The Future™?", note:"This action is very dramatic."},
-    {q:"Are you REALLY sure?", note:"Barnaby needs to hear you say it."},
-    {q:"Sure you're sure?", note:"No pressure. Enormous pressure."},
-    {q:"On a scale of 1–10, how sure?", slider:true},
-    {q:"The slider says you're only 7/10 sure. Try again?", note:"We checked with the slider. The slider is disappointed."},
-    {q:"Fine. We'll do it. Please stop clicking.", final:true}
-  ];
-  let i=0, off=0;
-  function next(){
-    if(i>=steps.length){ Modals.closeAll(); done&&done(); return; }
-    const s=steps[i]; off+=14;
-    const guilt = i===4 ? `<button class="no" id="mno">No</button>` : (i>0?`<button class="no" id="mno">No</button>`:'');
-    const m=Modals.make(`<h3>${s.q}</h3>${s.slider?'<input type="range" min="0" max="10" value="7" class="sure-slider">':`<p>${s.note||''}</p>`}
-      <div class="row"><button class="yes" id="myes">${s.final?"Alright, FINE":"Yes"}</button>${guilt}</div>`, off);
-    Meter.bump();
-    m.querySelector('#myes').onclick=()=>{ i++; SFX.pop(); next(); };
-    const no=m.querySelector('#mno'); if(no) no.onclick=()=>{ Barnaby.say("You can't say no now. We've come SO far together.",{mood:'worried'}); no.textContent="(you can't)"; };
-  }
-  Barnaby.say("Launching. Just need a few confirmations. Standard. Very standard.",{mood:'calm'});
-  next();
-}
-
-/* ---------- Update 3,000,000 ---------- */
-function updateSequence(done){
-  const ov=$('#update'), count=$('#upcount'), bar=$('#upbar'), title=$('#uptitle'), boot=$('#upboot');
-  boot.classList.add('hidden'); ov.classList.add('show'); title.textContent='Installing critical showtime updates';
-  const TOTAL=3000000; let n=1, inc=1, reversing=false, backup=0, finished=false;
-  function finish(){ if(finished) return; finished=true; ov.classList.remove('show'); done&&done(); }
-  $('#upskip').onclick=finish;
-  Barnaby.say("Updates. Now? NOW it wants updates.",{mood:'panic'});
-  function step(){ if(finished) return;
-    if(!reversing){ n+=inc|0; inc*=1.06;
-      if(n>=TOTAL-1){ n=TOTAL-1; count.innerHTML=`Update ${n.toLocaleString()} of ${TOTAL.toLocaleString()}`; bar.style.width='99.9%';
-        setTimeout(()=>{ count.innerHTML=`<span class="warn">Update failed. Reverting changes…</span>`; SFX.klaxon(); reversing=true; backup=n; requestAnimationFrame(step); }, 900); return; }
-      count.textContent=`Update ${n.toLocaleString()} of ${TOTAL.toLocaleString()}`; bar.style.width=(n/TOTAL*100)+'%';
-      requestAnimationFrame(step);
-    } else { backup-=backup*0.04+2000; if(backup<=0){ backup=0; finishRevert(); return; }
-      count.innerHTML=`<span class="warn">Reverting… ${Math.round(backup).toLocaleString()} remaining</span>`; bar.style.width=(backup/TOTAL*100)+'%';
-      requestAnimationFrame(step);
-    }
-  }
-  function finishRevert(){ Barnaby.say("Right. We'll just… do that again then. Later. Never.",{mood:'done'});
-    title.textContent='Rebooting the show'; boot.classList.remove('hidden');
-    const lines=['> loading stage_manager.exe … OK','> loading confidence.dll … NOT FOUND','> loading sense_of_humour … OK','> loading the_rest_of_the_show … [########..] 80%','> ready? … no','> ready anyway … OK'];
-    boot.textContent=''; let li=0; (function pl(){ if(finished) return; if(li<lines.length){ boot.textContent+=lines[li]+'\n'; li++; SFX.beep(); setTimeout(pl, 420); }
-      else setTimeout(finish, 700); })();
-  }
-  requestAnimationFrame(step);
-}
-
-/* ---------- Blue Screen of Just Kidding ---------- */
-function bsodSequence(done){
-  const ov=$('#bsod'), pct=$('#bsodpct'), face=$('#bsodface'), msg=$('#bsodmsg'), meta=$('#bsodmeta'), qr=$('#bsodqr');
-  qr.innerHTML=''; for(let i=0;i<121;i++){ const c=document.createElement('i'); if(Math.random()<.5) c.style.background='#fff'; qr.appendChild(c); }
-  ov.classList.remove('flip'); face.textContent=':('; msg.textContent='Your launch ran into a problem and needs to collect itself.';
-  meta.innerHTML='For more information: theatreproblems.example / never<br>Stop code: STAGE_MANAGER_PANIC_0x1D10T';
-  ov.classList.add('show'); SFX.thud();
-  Barnaby.say("No no no no. Not the blue one. Anything but the blue—",{mood:'panic'});
-  let p=0, finished=false;
-  const iv=setInterval(()=>{ p+= p<84?rand(7,14): (p<99?rand(1,2.4):0); if(p>99)p=99; pct.textContent=Math.floor(p);
-    if(p>=99){ clearInterval(iv); setTimeout(twist, 1300); } }, 170);
-  function finish(){ if(finished) return; finished=true; clearInterval(iv); ov.classList.remove('show'); done&&done(); }
-  $('#bsodskip').onclick=finish;
-  function twist(){ if(finished) return; ov.classList.add('flip'); face.textContent=':)'; msg.textContent='…just kidding. Collecting your reaction… reaction collected: mild panic. Delicious.';
-    meta.innerHTML='Stop code: JUST_KIDDING_0xHAHA<br><span style="opacity:.8">(you really looked at the QR code? incredible.)</span>';
-    SFX.ding(); setTimeout(finish, 2600); }
-}
-
-/* ---------- Overachiever 147% ---------- */
-function overachiever(done){
-  const sec=$('#progresssec'); sec.classList.remove('hidden'); sec.scrollIntoView({behavior:RM?'auto':'smooth', block:'center'});
-  const fill=$('#pfill'), pct=$('#ppct'), lbl=$('#plbl');
-  let p=0; const captions=[[100,"…done! Wait."],[112,"112%? That's more than all of it."],[147,"147% — stop loading! STOP!"],[200,"200%. This is too much progress."],[220,"That's — that's MORE than everything. STOP."]];
-  const iv=setInterval(()=>{ p+=rand(3,7); fill.style.width=Math.min(p,100)+'%';
-    if(p>100){ fill.style.width='100%'; fill.style.transform=`scaleX(${p/100})`; fill.style.transformOrigin='left'; }
-    pct.textContent=Math.floor(p)+'%';
-    for(const [th,tx] of captions){ if(Math.floor(p)===th||(p>=th&&p<th+5)) lbl.textContent=tx; }
-    if(p>=220){ clearInterval(iv); SFX.klaxon(); shake();
-      Barnaby.say("STOP LOADING. There is nothing left TO load.",{mood:'panic'});
-      setTimeout(()=>{ fill.style.transform='scaleX(0.03)'; pct.textContent='3%'; lbl.textContent='…sorry. Starting over. Modestly.'; setTimeout(()=>{ sec.classList.add('hidden'); done&&done(); },1200); }, 900); } }, 130);
-}
-
-/* ---------- Comic Sans Emergency ---------- */
-function comicSans(){ document.documentElement.classList.add('comic'); $('#comic-mark').classList.add('show');
-  Barnaby.say("Why is everything— who changed the— WHO CHANGED THE FONT.",{mood:'panic'});
-  if(!$('#comicfix')){ const b=document.createElement('button'); b.id='comicfix'; b.className='btn secondary';
-    b.textContent='Reset font'; b.style.cssText='position:fixed; right:16px; bottom:calc(var(--booth-h) + 56px); z-index:86';
-    let stage=0; const worse=['','papyrus','fantasy'];
-    b.onclick=()=>{ stage++; if(stage===1){ document.documentElement.style.setProperty('--wrong','Papyrus, fantasy'); Barnaby.say("Papyrus. That's WORSE. That's so much worse.",{mood:'done'}); }
-      else if(stage===2){ document.documentElement.style.setProperty('--wrong','"Comic Sans MS", cursive'); Barnaby.say("Fine. Comic Sans it is. We accept it. We are Comic Sans people now.",{mood:'done'}); }
-      else { document.documentElement.classList.remove('comic'); $('#comic-mark').classList.remove('show'); b.remove(); Barnaby.say("There. Normal font. Don't touch anything.",{mood:'proud'}); }
-    };
-    document.body.appendChild(b); }
-  Meter.bump();
-}
-
-/* ---------- Fourth wall falls ---------- */
-function fourthWall(){ const fw=$('#fourthwall'), bs=$('#backstage'); document.body.classList.add('perspective');
-  bs.classList.add('show'); fw.classList.add('show'); void fw.offsetWidth;
-  requestAnimationFrame(()=>fw.classList.add('fell')); SFX.thud(); shake(); flash();
-  Barnaby.say("That's the— that's the FOURTH WALL. On the floor. Everyone can see backstage. Hi.",{mood:'panic'});
-  const dust=document.createElement('div'); dust.style.cssText='position:fixed;left:0;right:0;bottom:0;height:40vh;z-index:47;pointer-events:none;background:radial-gradient(60% 100% at 50% 100%, rgba(180,160,120,.5), transparent)';
-  document.body.appendChild(dust); dust.animate?dust.animate([{opacity:.8},{opacity:0}],{duration:1400}):0; setTimeout(()=>dust.remove(),1500);
-  setTimeout(()=>{ fw.classList.remove('fell'); Barnaby.say("nngghh— up we— there. Slightly crooked. Nobody saw that.",{mood:'worried'});
-    setTimeout(()=>{ fw.classList.remove('show'); bs.classList.remove('show'); document.body.classList.remove('perspective'); }, 1000); }, 2600);
-  Meter.bump();
-}
-
-/* ---------- Premature pyro then strike ---------- */
-function pyroThenStrike(done){
-  Confetti.sideways(); Confetti.pfft(innerWidth*0.5, innerHeight*0.5);
-  Barnaby.say("The confetti's rigged to the wrong cue. Of course it is. One points at the WALL.",{mood:'done'});
-  setTimeout(()=>{ Confetti.rain(true); Strike.begin(done); }, 1200);
-}
-
-/* ---------- Cursor union strike ---------- */
-const Strike = (()=>{
-  let on=false, deal=null, done=null;
-  function controls(){ return $$('#signupform button, #signupform input, .card button, nav a, #relevelbtn'); }
-  function begin(cb){ if(on) return; on=true; done=cb;
-    Barnaby.say("Right, now they're UNIONISING. The buttons. The buttons have a union.",{mood:'panic'});
-    controls().forEach(c=>{ c.dataset.union='1'; const tag=document.createElement('span'); tag.className='strike-tag'; tag.textContent='ON STRIKE';
-      if(getComputedStyle(c).position==='static') c.style.position='relative'; c.appendChild(tag); });
-    window.addEventListener('mousemove', nudge);
-    // the exempt "sign the deal" button
-    deal=document.createElement('button'); deal.className='btn'; deal.textContent='✒ Sign the union deal';
-    deal.style.cssText='position:fixed; left:50%; top:46%; transform:translate(-50%,-50%); z-index:59';
-    deal.onclick=resolve; document.body.appendChild(deal);
-    Confetti.rain(true);
-  }
-  function nudge(e){ if(!on) return; controls().forEach(c=>{ const r=c.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2;
-    const dx=cx-e.clientX, dy=cy-e.clientY, d=Math.hypot(dx,dy); if(d<160){ const k=(160-d)/160*14;
-      c.style.transform=`translate(${dx/d*k}px,${dy/d*k}px)`; } }); }
-  function resolve(){ on=false; window.removeEventListener('mousemove',nudge); Confetti.rain(false);
-    $$('.strike-tag').forEach(t=>t.remove()); controls().forEach((c,i)=>{ setTimeout(()=>{ c.style.transform=''; }, i*40); });
-    deal.remove(); SFX.applause();
-    Barnaby.say("Deal signed. Everyone's happy. Nobody's happy. But everyone's back.",{mood:'proud'});
-    setTimeout(()=>done&&done(), 900);
-  }
-  function reset(){ on=false; window.removeEventListener('mousemove',nudge); $$('.strike-tag').forEach(t=>t.remove());
-    if(deal){deal.remove();deal=null;} }
-  return { begin, reset };
-})();
-
-/* ---------- Technical difficulties holding slide ---------- */
-function techDifficulties(done){
-  const ov=$('#techdiff'), bar=$('#tdbar'); ov.classList.add('show');
-  Barnaby.say("CUE THE HOLDING SLIDE. CUE IT. The naff one. Yes. That one.",{mood:'panic'});
-  let p=0, up=true; const iv=setInterval(()=>{ if(up){ p+=rand(2,6); if(p>=99){ p=99; up=false; setTimeout(()=>{},300); } }
-    else { p=3; up=true; } bar.style.width=p+'%'; }, 200);
-  function finish(){ clearInterval(iv); ov.classList.remove('show'); done&&done(); }
-  $('#tdskip').onclick=finish;
-  setTimeout(finish, 6000);
-}
-
-/* ---------- RESTORE ORDER curtain (that also goes wrong) ---------- */
-function restoreOrder(done){
-  // present the button
-  const b=document.createElement('button'); b.className='btn big'; b.id='restorebtn';
-  b.textContent='RESTORE ORDER — Everything is Fine Now';
-  b.style.cssText='position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:59; text-align:center; white-space:normal; max-width:88vw';
-  document.body.appendChild(b);
-  Barnaby.say("There's a button. 'Restore order.' I don't trust it. Press it.",{mood:'worried'});
-  b.onclick=()=>{ b.remove(); sweep(); };
-  function sweep(){
-    const L=$('#curtainL'), R=$('#curtainR'); L.style.transition='transform 1.4s cubic-bezier(.6,.02,.3,1)';
-    L.classList.add('closing'); R.classList.add('closing');
-    SFX.creak();
-    // R jams a third of the way + tears + drops
-    setTimeout(()=>{ R.style.transition='transform .2s'; R.style.transform='translateX(66%)'; }, 500);
-    setTimeout(()=>{ R.classList.add('torn'); SFX.thud(); Barnaby.say("It's— it's stuck. It's stuck. And now it's torn. Marvellous.",{mood:'done'}); }, 900);
-    setTimeout(()=>{ R.style.transition='transform 1s ease-in'; R.style.transform='translateX(66%) translateY(90%) rotate(6deg)'; }, 1300);
-    // behind the curtain: clean everything for a pristine frame
-    setTimeout(()=>{ cleanFrame(); }, 1500);
-    setTimeout(()=>{ // reveal pristine
-      L.classList.remove('closing'); L.style.transform=''; R.style.transition='transform 1.2s ease'; R.style.transform='translateX(102%)'; R.classList.remove('torn','closing');
-      Barnaby.say("…There. Pristine. Look at it. LOOK at it. We did it.",{mood:'proud'});
-    }, 2400);
-    // two glorious seconds then one screw pings
-    setTimeout(()=>{ oneScrewPings(); setTimeout(()=>done&&done(), 1400); }, 4600);
-  }
-  function cleanFrame(){ Tilt.reset(); Physics.reset(); Confetti.clearAll();
-    document.documentElement.classList.remove('comic'); $('#comic-mark').classList.remove('show');
-    $$('#nav a').forEach(a=>a.style.visibility=''); $('#brand').style.visibility='';
-    const cf=$('#comicfix'); if(cf) cf.remove(); const rl=$('#relevelbtn'); if(rl) rl.remove();
-    $('#backstage').classList.remove('show'); $('#fourthwall').classList.remove('show','fell','raised');
-    document.body.classList.remove('perspective');
-    $('#headline').innerHTML='GRAND OPENING';                 // put the letters back on
-    try{ Coward.reset(); }catch(e){}                            // return the runaway button to its seat
-  }
-  function oneScrewPings(){ SFX.pop(); const a=pick($$('#nav a[data-nav]')); if(a) Physics.popOff(a);
-    Barnaby.say("…a screw. One screw. After everything. After EVERYTHING.",{mood:'done'}); }
-}
-
-/* ---------- FINALE: curtain call confession ---------- */
-function finale(){
-  const ov=$('#finale'); ov.classList.add('show');
-  const speech=$('#finalespeech'); const rig=$('#lightrig');
-  const lines=[
-    "Ladies and gentlemen. Despite everything…",
-    "…we made it. This launch is a triumph of the human—"
-  ];
-  Barnaby.setMood('proud');
-  let i=0; (function say(){ if(i<lines.length){ speech.textContent=lines[i]; i++; setTimeout(say, 2200); }
-    else { // rig crashes
-      rig.classList.add('crash'); SFX.thud(); shake();
-      setTimeout(()=>{ speech.textContent="—spirit. …Take a bow with us anyway."; realConfetti(); rollCredits(); }, 700);
-    } })();
-}
-function realConfetti(){ SFX.applause(); for(let k=0;k<8;k++) setTimeout(()=>Confetti.burst(rand(innerWidth*0.2,innerWidth*0.8), -10, 40), k*160); }
-function rollCredits(){
-  const roll=$('#creditroll');
-  roll.innerHTML=`
-    <h4>THE WEBSITE THAT GOES WRONG</h4>
-    <p>Deputy Stage Manager (Acting Head) …… Barnaby Finch</p>
-    <p>Chief Apology Officer …… Barnaby Finch</p>
-    <p>Head of Things Falling Over …… Gravity</p>
-    <p>Confetti Cannon Operator …… Kevin (the intern)</p>
-    <p>The Fourth Wall …… itself, briefly</p>
-    <p>Curtain …… played by a bedsheet</p>
-    <p>The Button …… did not want to be here</p>
-    <p>Emotional Support Goose …… Legal</p>
-    <p>Kevin …… we're so sorry, Kevin</p>
-    <p style="margin-top:22px; color:#c9a24b">Malfunctions this evening: <b id="finaltally">${Meter.n}</b></p>
-    <p style="opacity:.7">Days Since Last Incident: 0</p>
-    <div class="encore" style="margin:30px 0 80px"><button class="btn big" id="encore2">ENCORE?</button><div class="tiny">It'll go perfectly this time. (it won't)</div></div>`;
-  roll.style.transition='none'; roll.style.transform='translateY(0)';
-  requestAnimationFrame(()=>{ roll.style.transition=`transform ${RM?2:18}s linear`; roll.style.transform=`translateY(-${roll.scrollHeight-120}px)`; });
-  $('#encore2').onclick=encore;
-  $('#creditskip').onclick=()=>{ roll.style.transition='none'; roll.style.transform=`translateY(-${roll.scrollHeight-120}px)`; };
-}
-function encore(){ location.reload(); }
-
-/* ---------- THE MELTDOWN: chains the big beats ---------- */
-const Meltdown = (()=>{
-  let running=false;
-  function begin(){ if(running) return; running=true;
-    Barnaby.say("LAUNCHING. Here we go. This is the moment. Please work. Please.",{mood:'panic'});
-    confirmationSpiral(()=> updateSequence(()=> bsodSequence(()=> afterCrash() )));
-  }
-  function afterCrash(){
-    // back on the page, but now everything goes at once
-    Tilt.nudge(-6); document.getElementById('hero').scrollIntoView({behavior:RM?'auto':'smooth'});
-    Headline.drop(); shedNav(2); StandBy.show();
-    setTimeout(()=> overachiever(()=> {
-      comicSans();
-      setTimeout(()=> fourthWall(), 1400);
-      setTimeout(()=> pyroThenStrike(()=> techDifficulties(()=> restoreOrder(()=> finale()))), 4200);
-    }), 600);
-  }
-  return { begin };
+  return { state, write, tickAll, focus };
 })();
 
 /* ============================================================================
-   GO.
+   CALLING THE SHOW
    ========================================================================== */
-window.addEventListener('DOMContentLoaded', ()=>{ ColdOpen.begin(); });
+const GO=$('#go');
+let idleT=null, idleN=0;
+const FILLER=[
+  ['Barnaby','So! Anyone here from out of town?'],
+  ['SM',"DSM, standing by on your call."],
+  ['Barnaby',"I'll just… stand here. Confidently."],
+  ['KEVIN · fly rail','are we going or not?'],
+  ['Barnaby','This is the bit where something happens. Any second now.'],
+  ['SANDRA · sound',"he's ad-libbing. CALL IT."],
+];
+function idle(){ clearTimeout(idleT); idleT=setTimeout(()=>{ const [who,t]=FILLER[idleN++%FILLER.length]; who==='Barnaby'? say(t) : cans(who,t); idle(); }, S.i<0? 14000 : 9000); }
+
+function standby(n){
+  const c=CUES[n]; $('#qname').textContent=c.id; $('#qdesc').textContent=c.short;
+  setLamp('standby'); GO.classList.remove('wait'); GO.classList.add('ready'); Book.state(n,'standby'); idle();
+}
+function early(){
+  const now=Date.now(); if(now-S.lastEarly<900) return; S.lastEarly=now; S.unsched++;
+  GO.classList.remove('nope'); void GO.offsetWidth; GO.classList.add('nope');
+  const [w,t]=pick([['KEVIN · fly rail',"we're still IN the last cue!"],['SANDRA · sound','steady — wait for the light.'],['SM','Hold, DSM. HOLD.']]); cans(w,t);
+}
+async function go(){
+  if(S.done){ location.reload(); return; }
+  if(S.skip){ S.skip(); return; }
+  if(S.running){ early(); return; }
+  const i=++S.i, cue=CUES[i]; if(!cue) return;
+  S.running=true; clearTimeout(idleT);
+  SFX.go(); setLamp('go'); GO.classList.remove('ready'); GO.classList.add('wait');
+  if(!S.t0){ S.t0=Date.now(); setInterval(tickClock,500); }
+  $('#qcount').textContent=`${i+1}/${CUES.length}`; $('#qname').textContent=cue.id; $('#qdesc').textContent=cue.short;
+  Book.state(i,'running'); setTimeout(()=>{ if(S.running) setLamp('run'); },450);
+  try{ await cue.run(); }catch(err){ console.error(cue.id, err); }
+  Book.write(i, cue.pencil());
+  S.running=false;
+  if(i<CUES.length-1){ standby(i+1); return; }
+  // ---- show down ----
+  setLamp('down'); $('#qname').textContent='SHOW DOWN'; $('#qdesc').textContent='Thank you, everybody.';
+  await wait(600); await Book.tickAll(); report();
+}
+
+function report(){
+  const r=$('#report'), mins=$('#clock').textContent;
+  r.innerHTML=`<h2>SHOW REPORT</h2><div class="sub">Performance no. 1 · DSM: you</div>
+    <dl><dt>Cues called</dt><dd>${CUES.length}</dd>
+    <dt>Cues that went wrong</dt><dd>${CUES.length}</dd>
+    <dt class="rehearsed">…exactly as rehearsed</dt><dd class="rehearsed">${CUES.length}</dd>
+    <dt>Malfunctions logged</dt><dd>${S.malf}</dd>
+    <dt>Unscheduled incidents</dt><dd>${S.unsched}${S.unsched?' <span style="font-weight:400">(you)</span>':''}</dd>
+    <dt>Pre-orders</dt><dd>${S.preorders}</dd>
+    <dt>Running time</dt><dd>${mins}</dd></dl>
+    <blockquote>“Nothing went wrong tonight that wasn't supposed to.”</blockquote>
+    <button id="encore">ENCORE ↻</button>`;
+  r.querySelector('#encore').onclick=()=>location.reload();
+  requestAnimationFrame(()=>r.classList.add('in'));
+  setTimeout(()=>{ r.classList.add('crooked'); SFX.ping(); cans('KEVIN · fly rail','…sorry.'); }, 2600);
+  S.done=true; GO.classList.remove('wait'); GO.classList.add('ready'); GO.innerHTML='ENCORE<small>SPACE</small>'; GO.style.fontSize='18px';
+}
+
+/* ---------- inputs ---------- */
+GO.addEventListener('click',go);
+window.addEventListener('keydown',e=>{
+  if(e.code!=='Space' && e.key!=='Enter') return;
+  const a=document.activeElement; if(a && a.tagName==='BUTTON' && a!==GO) return;
+  e.preventDefault(); if(e.repeat) return; GO.classList.add('pressed'); go();
+});
+window.addEventListener('keyup',e=>{ if(e.code==='Space'||e.key==='Enter'){ GO.classList.remove('pressed'); const a=document.activeElement; if(!a||a===GO||a.tagName!=='BUTTON') e.preventDefault(); } });
+CTA.addEventListener('click',e=>{
+  if(!S.ctaDone) return; S.preorders++; SFX.pop(); const p=toSet(e); FXP.spawn(p.x,p.y,{n:14});
+  $('#ctacount').textContent=`${S.preorders} sold`;
+  if(S.preorders===1) say('One! We have a customer!',{hold:200});
+  if(S.preorders===3) say("Stop, stop — you'll break it—",{hold:0});
+  if(S.preorders>=4) S.ctaDone('user');
+});
+BREAKER.addEventListener('click',()=>{ if(S.mainsDone) S.mainsDone('user'); });
+$('#snd').addEventListener('click',e=>{ const on=SFX.toggle(), b=e.currentTarget; b.setAttribute('aria-pressed',String(on)); b.textContent=on?'CANS: ON':'CANS: OFF';
+  cans('SANDRA · sound', on? 'welcome to the cans. mind the language.' : 'cans off. lucky you.'); });
+
+/* ---------- screen art ---------- */
+const ART={
+  bars:`<svg viewBox="0 0 350 186" preserveAspectRatio="none"><g>${['#c0c0c0','#c0c000','#00c0c0','#00c000','#c000c0','#c00000','#0000c0'].map((c,i)=>`<rect x="${i*50}" y="0" width="50" height="130" fill="${c}"/>`).join('')}</g><rect y="130" width="350" height="56" fill="#111"/><text x="175" y="166" text-anchor="middle" fill="#fff" font-family="Courier Prime, monospace" font-size="18">NO SIGNAL</text></svg>`,
+  margate:`<div><svg viewBox="0 0 350 186" preserveAspectRatio="xMidYMid slice"><rect width="350" height="110" fill="#9fd3f0"/><circle cx="290" cy="40" r="20" fill="#ffd84a"/><rect y="100" width="350" height="34" fill="#3a8fc0"/><path d="M0 104 Q30 98 60 104 T120 104 T180 104 T240 104 T300 104 T360 104" stroke="#fff" stroke-width="2" fill="none" opacity=".7"/><rect y="132" width="350" height="54" fill="#efd79b"/><g transform="translate(120 96)"><circle cx="0" cy="0" r="9" fill="#e8c3a2"/><path d="M-9 -3 Q0 -14 9 -3" fill="#5a3a26"/><rect x="-10" y="9" width="20" height="26" rx="4" fill="#f2a93b"/><rect x="-9" y="35" width="7" height="16" fill="#e8c3a2"/><rect x="2" y="35" width="7" height="16" fill="#e8c3a2"/><path d="M10 14 L24 2" stroke="#e8c3a2" stroke-width="5" stroke-linecap="round"/><path d="M22 -10 L28 6 L18 4Z" fill="#c9a35a"/><circle cx="24" cy="-11" r="6" fill="#f7b9cf"/></g><text x="10" y="18" fill="#123" font-family="Courier Prime, monospace" font-size="11">barnaby_margate_2019_FINAL.mov</text></svg></div>`,
+  product:`<div><svg viewBox="0 0 350 186" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3550ff"/><stop offset="1" stop-color="#7a3cff"/></linearGradient><radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7a8cff" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs><rect width="350" height="186" fill="#07070c"/><circle cx="175" cy="92" r="110" fill="url(#glow)"/><rect x="128" y="40" width="94" height="94" rx="24" fill="url(#pg)"/><circle cx="175" cy="87" r="24" fill="none" stroke="#fff" stroke-width="5" opacity=".9"/><rect x="146" y="150" width="58" height="5" rx="2.5" fill="#c9a35a"/></svg><div class="cap">THE FUTURE™ · actual size may vary</div></div>`,
+};
+SCR.innerHTML=`<div style="display:grid;place-items:center;color:#556;font:12px var(--mono)">STANDBY</div>`;
+
+/* ---------- curtain up (well — not yet) ---------- */
+addEventListener('resize',fit); fit();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+cans('SM',"house is in. DSM — whenever you're ready. GO on FLY 1.");
+Book.state(0,'standby'); idle();
 </script>
 </body>
 </html>
