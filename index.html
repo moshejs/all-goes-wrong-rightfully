@@ -1024,8 +1024,24 @@ SCR.innerHTML=`<div style="display:grid;place-items:center;color:#556;font:12px 
 /* ---------- curtain up (well — not yet) ---------- */
 addEventListener('resize',fit); fit();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-cans('SM',"house is in. DSM — whenever you're ready. GO on FLY 1.");
-Book.state(0,'standby'); idle();
+/* ?still paints one fixed moment mid-show (FLY 7, the swinging button) for portfolio screenshots */
+if(new URLSearchParams(location.search).has('still')){
+  document.body.classList.replace('house-up','house-out');
+  CURTAIN.style.transition='none'; CURTAIN.style.transform='translateY(-104%)';
+  HEAD.classList.remove('flown'); SCR.innerHTML=ART.product;
+  STRIP.style.transform=`translateY(${-11*74}px)`; $('#pfoot').textContent='*plus tax. plus Kevin.'; $('#pfoot').classList.add('show');
+  CTA.classList.remove('flown'); CTA.classList.add('wired','onewire','swing');
+  setTimeout(()=>{ Phys.drop($('#sandbag'),{vx:.5,vy:0,va:3}); Phys.drop(LTRS().at(-1),{vx:2.4,vy:0,va:8}); }, 200);
+  for(let i=0;i<6;i++) Book.write(i, CUES[i].pencil());
+  S.i=6; S.malf=17; $('#malf').textContent=17; $('#qcount').textContent='7/13'; $('#qname').textContent='FLY 7'; $('#qdesc').textContent=CUES[6].short;
+  Book.state(6,'running'); setLamp('run'); GO.classList.remove('ready'); GO.classList.add('wait'); $('#clock').textContent='01:22';
+  $('#sur-who').textContent='Barnaby'; $('#sur-txt').textContent="It's fine! It's live! Go on — press it!";
+  cans('LX · follow spot','got him!'); cans('SANDRA · sound','…that one was deliberate.'); cans('SM','lemons are not legal tender.'); cans('KEVIN · fly rail','lost a wire. LOST A WIRE.');
+  hint('Press PRE-ORDER on stage — it still works. Probably.');
+} else {
+  cans('SM',"house is in. DSM — whenever you're ready. GO on FLY 1.");
+  Book.state(0,'standby'); idle();
+}
 </script>
 </body>
 </html>
